@@ -1,6 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=16 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
+[ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_jnuqt"]
 [ext_resource type="Script" path="res://scripts/character/character_jump_manager.gd" id="2_d001m"]
 [ext_resource type="Script" path="res://scripts/character/character_animator.gd" id="2_qe53s"]
 [ext_resource type="Texture2D" uid="uid://r5m7p12r0fgf" path="res://3d assets/textures/grid.png" id="4_o7xs3"]
@@ -72,6 +73,12 @@ environment = SubResource("Environment_gl5r6")
 transform = Transform3D(0.87282, -0.464849, 0.148665, 0, 0.304615, 0.952476, -0.488042, -0.83134, 0.265874, 0, 0, 0)
 shadow_enabled = true
 
+[node name="Camera3D" type="Camera3D" parent="GameViewportContainer/GameViewport" node_paths=PackedStringArray("target")]
+transform = Transform3D(0.994805, -0.0566783, 0.084566, 0, 0.830683, 0.556746, -0.101803, -0.553853, 0.826367, 1.105, 4.255, 3.383)
+current = true
+script = ExtResource("1_jnuqt")
+target = NodePath("../Character")
+
 [node name="Character" type="CharacterBody3D" parent="GameViewportContainer/GameViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 floor_stop_on_slope = false
@@ -83,10 +90,6 @@ gravity = 50.0
 [node name="BoardCollider" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Character"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_ur1om")
-
-[node name="Camera3D" type="Camera3D" parent="GameViewportContainer/GameViewport/Character"]
-transform = Transform3D(0.994805, -0.0566783, 0.084566, 0, 0.830683, 0.556745, -0.101803, -0.553853, 0.826368, 1.105, 3.255, 3.383)
-current = true
 
 [node name="Animator" type="Node3D" parent="GameViewportContainer/GameViewport/Character" node_paths=PackedStringArray("crouch_bone", "physics_body")]
 script = ExtResource("2_qe53s")
