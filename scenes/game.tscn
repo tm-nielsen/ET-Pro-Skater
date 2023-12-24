@@ -1,8 +1,8 @@
 [gd_scene load_steps=15 format=3 uid="uid://dgce8uj4j5jur"]
 
-[ext_resource type="Script" path="res://scripts/character_controller.gd" id="1_80whh"]
-[ext_resource type="Script" path="res://scripts/character_jump_manager.gd" id="2_d001m"]
-[ext_resource type="Script" path="res://scripts/character_animator.gd" id="2_qe53s"]
+[ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
+[ext_resource type="Script" path="res://scripts/character/character_jump_manager.gd" id="2_d001m"]
+[ext_resource type="Script" path="res://scripts/character/character_animator.gd" id="2_qe53s"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
 ambient_light_source = 2
