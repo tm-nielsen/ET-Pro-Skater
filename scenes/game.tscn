@@ -1,9 +1,10 @@
-[gd_scene load_steps=14 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=15 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
 [ext_resource type="Script" path="res://scripts/character/character_jump_manager.gd" id="2_d001m"]
 [ext_resource type="Script" path="res://scripts/character/character_animator.gd" id="2_qe53s"]
 [ext_resource type="Texture2D" uid="uid://r5m7p12r0fgf" path="res://3d assets/textures/grid.png" id="4_o7xs3"]
+[ext_resource type="PackedScene" uid="uid://bsm8bywv4p76x" path="res://3d assets/models/park_objects/trapezoid.blend" id="5_2pfh7"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
 ambient_light_source = 2
@@ -73,6 +74,8 @@ shadow_enabled = true
 
 [node name="Character" type="CharacterBody3D" parent="GameViewportContainer/GameViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+floor_stop_on_slope = false
+floor_max_angle = 1.5708
 script = ExtResource("1_80whh")
 jump_manager = SubResource("Resource_714km")
 gravity = 50.0
@@ -111,3 +114,6 @@ shape = SubResource("WorldBoundaryShape3D_rquj0")
 mesh = SubResource("PlaneMesh_uouax")
 skeleton = NodePath("")
 surface_material_override/0 = SubResource("StandardMaterial3D_5nmsp")
+
+[node name="trapezoid" parent="." instance=ExtResource("5_2pfh7")]
+transform = Transform3D(-2.18557e-07, 0, 5, 0, 5, 0, -5, 0, -2.18557e-07, 0, 0, -50)
