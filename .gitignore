@@ -1,0 +1,19 @@
+# Godot 4+ specific ignores
+.godot/
+
+# Godot-specific ignores
+.import/
+export.cfg
+export_presets.cfg
+
+*.blend1
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+.history/
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]uilds/
