@@ -1,8 +1,9 @@
-[gd_scene load_steps=15 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=14 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
 [ext_resource type="Script" path="res://scripts/character/character_jump_manager.gd" id="2_d001m"]
 [ext_resource type="Script" path="res://scripts/character/character_animator.gd" id="2_qe53s"]
+[ext_resource type="Texture2D" uid="uid://r5m7p12r0fgf" path="res://3d assets/textures/grid.png" id="4_o7xs3"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
 ambient_light_source = 2
@@ -14,8 +15,8 @@ point_count = 4
 
 [sub_resource type="Resource" id="Resource_714km"]
 script = ExtResource("2_d001m")
-jump_force = 10.0
-ollie_force = Vector2(1, 8)
+jump_force = 20.0
+ollie_force = Vector2(1, 12)
 ollie_window_duration = 0.5
 ollie_window_curve = SubResource("Curve_cbr3o")
 
@@ -31,17 +32,13 @@ size = Vector3(0.6, 0.1, 2)
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_rquj0"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_uouax"]
-size = Vector2(200, 200)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_o1rc5"]
-frequency = 0.1
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7gh85"]
-noise = SubResource("FastNoiseLite_o1rc5")
+size = Vector2(2000, 2000)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5nmsp"]
 albedo_color = Color(0.301961, 0.537255, 0.54902, 1)
-albedo_texture = SubResource("NoiseTexture2D_7gh85")
+albedo_texture = ExtResource("4_o7xs3")
+uv1_scale = Vector3(100, 100, 100)
+texture_filter = 0
 
 [node name="Game" type="Control"]
 layout_mode = 3
@@ -78,6 +75,7 @@ shadow_enabled = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 script = ExtResource("1_80whh")
 jump_manager = SubResource("Resource_714km")
+gravity = 50.0
 
 [node name="BoardCollider" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Character"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
