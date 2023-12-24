@@ -1,0 +1,88 @@
+[gd_scene load_steps=11 format=3 uid="uid://dgce8uj4j5jur"]
+
+[ext_resource type="Script" path="res://scripts/character_controller.gd" id="1_80whh"]
+
+[sub_resource type="Environment" id="Environment_gl5r6"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ur1om"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_1ye46"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_irx74"]
+size = Vector3(0.6, 0.1, 2)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_rquj0"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_uouax"]
+size = Vector2(200, 200)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_o1rc5"]
+frequency = 0.1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7gh85"]
+noise = SubResource("FastNoiseLite_o1rc5")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5nmsp"]
+albedo_color = Color(0.301961, 0.537255, 0.54902, 1)
+albedo_texture = SubResource("NoiseTexture2D_7gh85")
+
+[node name="Game" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+stretch_shrink = 8
+
+[node name="GameViewport" type="SubViewport" parent="GameViewportContainer"]
+size = Vector2i(144, 81)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="GameViewportContainer/GameViewport"]
+environment = SubResource("Environment_gl5r6")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="GameViewportContainer/GameViewport"]
+transform = Transform3D(0.87282, -0.464849, 0.148665, 0, 0.304615, 0.952476, -0.488042, -0.83134, 0.265874, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Character" type="CharacterBody3D" parent="GameViewportContainer/GameViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("1_80whh")
+
+[node name="BoardCollider" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Character"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_ur1om")
+
+[node name="BodyMesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("BoxMesh_1ye46")
+
+[node name="BoardMesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+mesh = SubResource("BoxMesh_irx74")
+
+[node name="Camera3D" type="Camera3D" parent="GameViewportContainer/GameViewport/Character"]
+transform = Transform3D(1, 0, 0, 0, 0.830683, 0.556745, 0, -0.556745, 0.830683, 0, 3.255, 3.383)
+current = true
+
+[node name="Ground" type="StaticBody3D" parent="GameViewportContainer/GameViewport"]
+
+[node name="WorldBoundary" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Ground"]
+shape = SubResource("WorldBoundaryShape3D_rquj0")
+
+[node name="Mesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Ground"]
+mesh = SubResource("PlaneMesh_uouax")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_5nmsp")
