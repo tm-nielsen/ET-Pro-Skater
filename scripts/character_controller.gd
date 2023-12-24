@@ -1,27 +1,42 @@
 extends CharacterBody3D
 
-@export var push_force := 10.0
+@export var push_force := 20.0
 @export var push_delay := 1.0
 @export var turn_force := 10.0
+@export var jump_manager: CharacterJumpManager
 @export_range(0, 1) var ground_friction := 0.005
-@export var gravity := 9.81
+@export var gravity := 20.0
+
+var can_push := true
 
 
 func _physics_process(delta):
-    if Input.is_action_just_pressed("push"):
-        velocity += push_force * -basis.z
-
+    jump_manager.process_jumps(self)
 
     if is_on_floor():
-        turn(delta)
+        velocity *= (1 - ground_friction)
+        process_pushing()
+        process_turning(delta)
         align_to_ground()
 
-    velocity *= (1 - ground_friction)
     velocity += gravity * Vector3.DOWN * delta
     move_and_slide()
 
 
-func turn(delta):
+func process_pushing():
+    if can_push and Input.is_action_just_pressed("push"):
+        velocity += push_force * -basis.z
+
+        can_push = false
+        var push_tween = create_tween()
+        push_tween.tween_interval(push_delay)
+        push_tween.tween_callback(_enable_pushing)
+
+func _enable_pushing():
+    can_push = true
+
+
+func process_turning(delta):
     if Input.is_action_pressed("left"):
         _turn(turn_force * delta)
     if Input.is_action_pressed("right"):
