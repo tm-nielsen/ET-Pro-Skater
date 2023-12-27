@@ -1,8 +1,8 @@
-extends Node3D
+class_name CharacterAnimator
+extends TweenableNode
 
 @export_group("References")
 @export var crouch_bone: Node3D
-@export var physics_body: CharacterBody3D = get_parent()
 
 @export_group("Parameters")
 @export_subgroup("crouch", "crouch")
@@ -24,7 +24,7 @@ extends Node3D
 
 
 func _physics_process(_delta):
-    update_axis("left", "right", start_turn_tween)
+    update_axis("right", "left", start_turn_tween)
     update_axis("up", "down", start_tilt_tween)
     process_crouch_tweens()
 
@@ -33,18 +33,19 @@ func update_axis(action_a_name: StringName, action_b_name: StringName, update_me
     var a_toggled = Input.is_action_just_pressed(action_a_name) || Input.is_action_just_released(action_a_name)
     var b_toggled = Input.is_action_just_pressed(action_b_name) || Input.is_action_just_released(action_b_name)
     if a_toggled || b_toggled:
-        update_method.call()
+        var axis_value = Input.get_axis(action_a_name, action_b_name)
+        if !CharacterController.is_grounded:
+            axis_value = 0
+        elif CharacterController.is_backwards:
+            axis_value *= -1
+        update_method.call(axis_value)
 
 
-func start_turn_tween():
-    var turn_direction = Input.get_axis("right", "left")
-    if !physics_body.is_on_floor():
-        turn_direction = 0
+func start_turn_tween(turn_direction: float):
     tween_property("rotation:z", turn_direction * turn_angle, turn_tween_duration)
 
 
-func start_tilt_tween():
-    var tilt_direction = Input.get_axis("up", "down")
+func start_tilt_tween(tilt_direction: float):
     tween_property("rotation:x", tilt_angle * tilt_direction, tilt_tween_duration)
     var offset_position = position
     offset_position.y = tilt_offset.y * abs(tilt_direction)
@@ -58,20 +59,3 @@ func process_crouch_tweens():
     elif Input.is_action_just_released("crouch"):
         var tween = tween_property("scale", jump_scale, crouch_tween_duration, crouch_bone)
         tween.tween_property(crouch_bone, "scale", Vector3.ONE, crouch_tween_duration)
-
-
-func tween_property(property_name: String, final_value, duration: float, target_node = self) -> Tween:
-    return tween_property_with_delay(property_name, final_value, duration, 0, target_node)
-
-func tween_property_with_delay(property_name: String, final_value, duration: float, delay: float, target_node = self) -> Tween:
-    var tween = create_and_initialize_tween()
-    if delay > 0:
-        tween.tween_delay(delay)
-    tween.tween_property(target_node, property_name, final_value, duration)
-    return tween
-
-func create_and_initialize_tween() -> Tween:
-    var tween = create_tween()
-    tween.set_ease(Tween.EASE_OUT)
-    tween.set_trans(Tween.TRANS_BACK)
-    return tween

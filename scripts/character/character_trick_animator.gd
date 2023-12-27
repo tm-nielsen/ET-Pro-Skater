@@ -1,0 +1,2 @@
+class_name CharacterTrickAnimator
+extends Node3D

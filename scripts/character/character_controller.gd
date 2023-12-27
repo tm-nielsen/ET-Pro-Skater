@@ -1,4 +1,12 @@
+class_name CharacterController
 extends CharacterBody3D
+
+signal left_ground
+signal landed
+
+static var is_grounded: bool
+static var is_backwards: bool
+static var forward: Vector3
 
 @export var push_force := 20.0
 @export var push_delay := 1.0
@@ -13,19 +21,32 @@ var can_push := true
 func _physics_process(delta):
     jump_manager.process_jumps(self)
 
+    process_landings()
     if is_on_floor():
         velocity *= (1 - ground_friction)
         process_pushing()
         process_turning(delta)
         align_to_ground()
+        velocity += 100 * Vector3.DOWN * delta
 
     velocity += gravity * Vector3.DOWN * delta
     move_and_slide()
 
 
+func process_landings():
+    if is_on_floor() && !is_grounded:
+        landed.emit()
+    elif !is_on_floor() && is_grounded:
+        left_ground.emit()
+    is_grounded = is_on_floor()
+
+
 func process_pushing():
     if can_push and Input.is_action_just_pressed("push"):
-        velocity += push_force * -basis.z
+        if is_backwards:
+            velocity -= push_force * -basis.z
+        else:
+            velocity += push_force * -basis.z
 
         can_push = false
         var push_tween = create_tween()
@@ -45,6 +66,9 @@ func process_turning(delta):
 func _turn(turn_angle: float):
     rotate_y(turn_angle)
     velocity = velocity.rotated(Vector3.UP, turn_angle)
+    
+    if is_backwards: forward = basis.z
+    else: forward = -basis.z
 
 
 func align_to_ground():

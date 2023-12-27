@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=20 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_jnuqt"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/character/character_animator.gd" id="2_qe53s"]
 [ext_resource type="Texture2D" uid="uid://r5m7p12r0fgf" path="res://3d assets/textures/grid.png" id="4_o7xs3"]
 [ext_resource type="PackedScene" uid="uid://bsm8bywv4p76x" path="res://3d assets/models/park_objects/trapezoid.blend" id="5_2pfh7"]
+[ext_resource type="Script" path="res://scripts/character/character_trick_manager.gd" id="5_3sunj"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
 ambient_light_source = 2
@@ -22,11 +23,20 @@ ollie_force = Vector2(1, 12)
 ollie_window_duration = 0.5
 ollie_window_curve = SubResource("Curve_cbr3o")
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ur1om"]
-radius = 0.3
-height = 1.5
+[sub_resource type="BoxShape3D" id="BoxShape3D_428qx"]
+size = Vector3(0.6, 0.1, 2)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_cngjg"]
+radius = 0.1
+height = 0.6
 
 [sub_resource type="BoxMesh" id="BoxMesh_1ye46"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_i7kpd"]
+size = Vector3(0.5, 0.8, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lww7n"]
+albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_irx74"]
 size = Vector3(0.6, 0.1, 2)
@@ -81,6 +91,7 @@ target = NodePath("../Character")
 
 [node name="Character" type="CharacterBody3D" parent="GameViewportContainer/GameViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+wall_min_slide_angle = 1.5708
 floor_stop_on_slope = false
 floor_max_angle = 1.5708
 script = ExtResource("1_80whh")
@@ -88,13 +99,20 @@ jump_manager = SubResource("Resource_714km")
 gravity = 50.0
 
 [node name="BoardCollider" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Character"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-shape = SubResource("CapsuleShape3D_ur1om")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+shape = SubResource("BoxShape3D_428qx")
 
-[node name="Animator" type="Node3D" parent="GameViewportContainer/GameViewport/Character" node_paths=PackedStringArray("crouch_bone", "physics_body")]
+[node name="FrontWheelCollider" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Character"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, -0.2, -0.8)
+shape = SubResource("CapsuleShape3D_cngjg")
+
+[node name="BackWheelCollider" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Character"]
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, -0.2, 0.8)
+shape = SubResource("CapsuleShape3D_cngjg")
+
+[node name="Animator" type="Node3D" parent="GameViewportContainer/GameViewport/Character" node_paths=PackedStringArray("crouch_bone")]
 script = ExtResource("2_qe53s")
 crouch_bone = NodePath("CrouchBone")
-physics_body = NodePath("..")
 
 [node name="CrouchBone" type="Node3D" parent="GameViewportContainer/GameViewport/Character/Animator"]
 
@@ -103,10 +121,20 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 mesh = SubResource("BoxMesh_1ye46")
 skeleton = NodePath("../../..")
 
+[node name="Arrow" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character/Animator/CrouchBone"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1, 0)
+mesh = SubResource("PrismMesh_i7kpd")
+skeleton = NodePath("../../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_lww7n")
+
 [node name="BoardMesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character/Animator"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
 mesh = SubResource("BoxMesh_irx74")
 skeleton = NodePath("../..")
+
+[node name="TrickManager" type="Node3D" parent="GameViewportContainer/GameViewport/Character" node_paths=PackedStringArray("rotation_node")]
+script = ExtResource("5_3sunj")
+rotation_node = NodePath("..")
 
 [node name="Ground" type="StaticBody3D" parent="GameViewportContainer/GameViewport"]
 
@@ -120,3 +148,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_5nmsp")
 
 [node name="trapezoid" parent="." instance=ExtResource("5_2pfh7")]
 transform = Transform3D(-2.18557e-07, 0, 5, 0, 5, 0, -5, 0, -2.18557e-07, 0, 0, -50)
+
+[connection signal="landed" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_landed"]
+[connection signal="left_ground" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_left_ground"]

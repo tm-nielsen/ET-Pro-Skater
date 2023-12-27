@@ -29,7 +29,7 @@ func process_jumps(character_body: CharacterBody3D):
         var vertical_input_axis = Input.get_axis("down", "up")
         if vertical_input_axis != stored_ollie_direction:
             var ollie_impulse = ollie_force.y * Vector3.UP
-            ollie_impulse += character_body.basis.z * ollie_force.x * stored_ollie_direction
+            ollie_impulse -= CharacterController.forward * ollie_force.x * stored_ollie_direction
 
             var curved_ollie_strength = ollie_window_curve.sample(1.0 - ollie_potential)
 
