@@ -4,7 +4,7 @@ extends Camera3D
 @export var position_offset := Vector3(1, 2, 3)
 @export var look_offset := Vector3(0.5, 0, 0)
 @export var position_lerp := 0.2
-@export var look_lerp := 0.3
+@export var look_lerp := 0.5
 
 @onready var planar_offset := position_offset * Vector3(1, 0, 1)
 @onready var position_offset_length := position_offset.length()
