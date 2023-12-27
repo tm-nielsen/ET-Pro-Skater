@@ -91,9 +91,8 @@ target = NodePath("../Character")
 
 [node name="Character" type="CharacterBody3D" parent="GameViewportContainer/GameViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-wall_min_slide_angle = 1.5708
-floor_stop_on_slope = false
 floor_max_angle = 1.5708
+floor_snap_length = 0.5
 script = ExtResource("1_80whh")
 jump_manager = SubResource("Resource_714km")
 gravity = 50.0

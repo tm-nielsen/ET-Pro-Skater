@@ -14,6 +14,8 @@ static var forward: Vector3
 @export var jump_manager: CharacterJumpManager
 @export_range(0, 1) var ground_friction := 0.005
 @export var gravity := 20.0
+@export var slope_force := 20.0
+@export var slope_force_crouch_multiplier := 2.0
 
 var can_push := true
 
@@ -26,8 +28,8 @@ func _physics_process(delta):
         velocity *= (1 - ground_friction)
         process_pushing()
         process_turning(delta)
-        align_to_ground()
-        velocity += 100 * Vector3.DOWN * delta
+        apply_slope_force(delta)
+        align_body()
 
     velocity += gravity * Vector3.DOWN * delta
     move_and_slide()
@@ -71,7 +73,24 @@ func _turn(turn_angle: float):
     else: forward = -basis.z
 
 
-func align_to_ground():
+func align_body():
     var floor_normal = get_floor_normal()
+    if velocity.length_squared() > 0:
+        var planar_velocity = Plane(floor_normal).project(velocity)
+        if planar_velocity.length_squared() > 0:
+            basis = Basis.looking_at(planar_velocity.normalized(), floor_normal, is_backwards)
+            return
+    
     var body_forward = Plane(floor_normal).project(-basis.z)
-    basis = Basis.looking_at(body_forward, floor_normal)
+    if body_forward.length_squared() > 0:
+        basis = Basis.looking_at(body_forward, floor_normal, is_backwards)
+
+
+func apply_slope_force(delta):
+    var floor_normal = get_floor_normal()
+    var slope_vector = floor_normal * Vector3(1, 0, 1)
+    var force_direction = Plane(floor_normal).project(slope_vector)
+    var force = force_direction * slope_force * delta
+    if Input.is_action_pressed("crouch"):
+        force *= slope_force_crouch_multiplier
+    velocity += force
