@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bm8e80ox4usv6"]
+
+[ext_resource type="Shader" path="res://3d assets/shaders/world_grid.gdshader" id="1_ta3fk"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_ta3fk")
+shader_parameter/colour_a = Color(0.313726, 0.529412, 0.541176, 1)
+shader_parameter/colour_b = Color(0.15, 0.246667, 0.25, 1)
+shader_parameter/grid_size = 5.0
