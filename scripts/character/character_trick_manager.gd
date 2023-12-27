@@ -4,7 +4,6 @@ extends TweenableNode
 @export var rotation_node: Node3D
 
 @export var rotation_speed := 12
-@export var landing_snap_tween_duration := 0.1
 @export var landing_safe_margin := PI / 3
 
 var initial_y_rotation: float
@@ -49,7 +48,7 @@ func on_character_landed():
     var snapped_rotation = get_small_angle(initial_y_rotation + snapped_rotation_delta)
 
     if abs(y_rotation - snapped_rotation) < landing_safe_margin:
-        tween_property("rotation:y", snapped_rotation, landing_snap_tween_duration, rotation_node)
+        rotation_node.rotation.y = snapped_rotation
         if int(snapped_rotation_delta / PI) % 2:
             CharacterController.is_backwards = !CharacterController.is_backwards
     else:
