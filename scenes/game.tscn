@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=21 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_jnuqt"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/character/character_animator.gd" id="2_qe53s"]
 [ext_resource type="PackedScene" uid="uid://bsm8bywv4p76x" path="res://3d assets/models/park_objects/trapezoid.blend" id="5_2pfh7"]
 [ext_resource type="Script" path="res://scripts/character/character_trick_manager.gd" id="5_3sunj"]
+[ext_resource type="Script" path="res://scripts/character/polish/bobblehead.gd" id="5_ytnix"]
 [ext_resource type="Material" uid="uid://bm8e80ox4usv6" path="res://3d assets/materials/grid_material.tres" id="6_7o7re"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
@@ -37,6 +38,12 @@ size = Vector3(0.5, 0.8, 0.1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lww7n"]
 albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_vr257"]
+top_radius = 0.2
+height = 0.8
+radial_segments = 8
+rings = 1
 
 [sub_resource type="BoxMesh" id="BoxMesh_irx74"]
 size = Vector3(0.6, 0.1, 2)
@@ -116,9 +123,23 @@ skeleton = NodePath("../../..")
 
 [node name="Arrow" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character/Animator/CrouchBone"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1, 0)
+visible = false
 mesh = SubResource("PrismMesh_i7kpd")
 skeleton = NodePath("../../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_lww7n")
+
+[node name="Neck" type="Node3D" parent="GameViewportContainer/GameViewport/Character/Animator/CrouchBone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="HeadBone" type="Node3D" parent="GameViewportContainer/GameViewport/Character/Animator" node_paths=PackedStringArray("neck_node")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("5_ytnix")
+neck_node = NodePath("../CrouchBone/Neck")
+
+[node name="HeadMesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character/Animator/HeadBone"]
+transform = Transform3D(1, 0, 0, 0, -0.173648, -0.984808, 0, 0.984808, -0.173648, 0, 0.5, 0)
+mesh = SubResource("CylinderMesh_vr257")
+skeleton = NodePath("../..")
 
 [node name="BoardMesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character/Animator"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
