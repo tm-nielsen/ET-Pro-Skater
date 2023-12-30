@@ -3,6 +3,7 @@ extends CharacterBody3D
 
 signal left_ground
 signal landed
+signal ollied(flick_direction: float)
 
 static var is_grounded: bool
 static var is_backwards: bool
@@ -25,10 +26,11 @@ func _physics_process(delta):
 
     process_landings()
     if is_on_floor():
-        velocity *= (1 - ground_friction)
-        process_pushing()
-        process_turning(delta)
+        if !Input.is_action_pressed("crouch") || Input.get_axis("down", "up") == 0:
+            process_pushing()
+            process_turning(delta)
         apply_slope_force(delta)
+        velocity *= (1 - ground_friction)
         align_body()
 
     velocity += gravity * Vector3.DOWN * delta

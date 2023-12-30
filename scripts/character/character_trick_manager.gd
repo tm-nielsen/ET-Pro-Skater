@@ -2,15 +2,20 @@ class_name CharacterTrickManager
 extends TweenableNode
 
 @export var rotation_node: Node3D
+@export var trick_animator: CharacterTrickAnimator
 
 @export var rotation_speed := 12
 @export var landing_safe_margin := PI / 3
 
 var initial_y_rotation: float
+var trick_in_progress: bool
 
+
+func _ready():
+    trick_animator.trick_completed.connect(on_trick_completed)
 
 func _physics_process(delta):
-    if CharacterController.is_grounded:
+    if CharacterController.is_grounded || trick_in_progress:
         return
 
     if Input.is_action_pressed("crouch"):
@@ -25,8 +30,8 @@ func process_grab_tricks(delta):
     var horizontal_input = Input.get_axis("right", "left")
     rotation_node.rotation.y += rotation_speed * horizontal_input * delta
 
-    var vertical_input = Input.get_axis("up", "down")
-    rotation_node.rotation.x += rotation_speed * vertical_input * delta
+    # var vertical_input = Input.get_axis("up", "down")
+    # rotation_node.rotation.x += rotation_speed * vertical_input * delta
 
 
 func process_push_tricks():
@@ -35,6 +40,15 @@ func process_push_tricks():
 
 func process_neutral_tricks():
     pass
+
+
+func on_character_ollied(flick_direction: float):
+    if flick_direction != 0:
+        trick_in_progress = true
+        trick_animator.start_kickflip(flick_direction)
+
+func on_trick_completed():
+    trick_in_progress = false
 
 
 func on_character_left_ground():

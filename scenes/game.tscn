@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=22 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_jnuqt"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://scripts/character/character_trick_manager.gd" id="5_3sunj"]
 [ext_resource type="Script" path="res://scripts/character/polish/bobblehead.gd" id="5_ytnix"]
 [ext_resource type="Material" uid="uid://bm8e80ox4usv6" path="res://3d assets/materials/grid_material.tres" id="6_7o7re"]
+[ext_resource type="Script" path="res://scripts/character/character_trick_animator.gd" id="7_o65v5"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
 ambient_light_source = 2
@@ -141,14 +142,22 @@ transform = Transform3D(1, 0, 0, 0, -0.173648, -0.984808, 0, 0.984808, -0.173648
 mesh = SubResource("CylinderMesh_vr257")
 skeleton = NodePath("../..")
 
-[node name="BoardMesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character/Animator"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
-mesh = SubResource("BoxMesh_irx74")
-skeleton = NodePath("../..")
+[node name="BoardBone" type="Node3D" parent="GameViewportContainer/GameViewport/Character/Animator"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 
-[node name="TrickManager" type="Node3D" parent="GameViewportContainer/GameViewport/Character" node_paths=PackedStringArray("rotation_node")]
+[node name="BoardMesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character/Animator/BoardBone"]
+mesh = SubResource("BoxMesh_irx74")
+skeleton = NodePath("../../..")
+
+[node name="TrickManager" type="Node3D" parent="GameViewportContainer/GameViewport/Character" node_paths=PackedStringArray("rotation_node", "trick_animator")]
 script = ExtResource("5_3sunj")
 rotation_node = NodePath("..")
+trick_animator = NodePath("CharacterTrickAnimator")
+
+[node name="CharacterTrickAnimator" type="Node3D" parent="GameViewportContainer/GameViewport/Character/TrickManager" node_paths=PackedStringArray("board_bone")]
+script = ExtResource("7_o65v5")
+board_bone = NodePath("../../Animator/BoardBone")
+kicklip_offset = Vector3(0, -0.5, -0.2)
 
 [node name="Ground" type="StaticBody3D" parent="GameViewportContainer/GameViewport"]
 
@@ -165,3 +174,4 @@ transform = Transform3D(-2.18557e-07, 0, 5, 0, 5, 0, -5, 0, -2.18557e-07, 0, 0, 
 
 [connection signal="landed" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_landed"]
 [connection signal="left_ground" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_left_ground"]
+[connection signal="ollied" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_ollied"]
