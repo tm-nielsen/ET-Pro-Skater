@@ -39,7 +39,8 @@ func _physics_process(_delta):
 
 
 func get_transformed_offset(offset: Vector3) -> Vector3:
-    var result = target.basis * offset
+    var transform_basis = target.basis
     if CharacterController.is_backwards:
-        result = result.rotated(target.basis.y, PI)
-    return result
+        transform_basis = transform_basis.rotated(transform_basis.y, PI)
+        offset.x *= -1
+    return transform_basis * offset
