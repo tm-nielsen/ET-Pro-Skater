@@ -2,7 +2,10 @@ class_name CharacterAnimator
 extends TweenableNode
 
 @export_group("References")
-@export var crouch_bone: Node3D
+@export var character_skeleton: Skeleton3D
+@export var body_bone_name := "Back"
+@onready var body_bone_index := character_skeleton.find_bone(body_bone_name)
+@export var board_bone: Node3D
 
 @export_group("Parameters")
 @export_subgroup("crouch", "crouch")
@@ -21,6 +24,8 @@ extends TweenableNode
 @export var tilt_offset := Vector2(0.1, 0.4)
 @export var tilt_angle := 0.6
 @export var tilt_tween_duration := 0.2
+
+var body_scale: Vector3: set = _set_body_scale
 
 
 func _physics_process(_delta):
@@ -55,7 +60,15 @@ func start_tilt_tween(tilt_direction: float):
 
 func process_crouch_tweens():
     if Input.is_action_just_pressed("crouch"):
-        tween_property("scale", crouch_scale, crouch_tween_duration, crouch_bone)
+        # tween_property("scale", crouch_scale, crouch_tween_duration, crouch_bone)
+        tween_property("body_scale", crouch_scale, crouch_tween_duration)
     elif Input.is_action_just_released("crouch"):
-        var tween = tween_property("scale", jump_scale, crouch_tween_duration, crouch_bone)
-        tween.tween_property(crouch_bone, "scale", Vector3.ONE, crouch_tween_duration)
+        # var tween = tween_property("scale", jump_scale, crouch_tween_duration, crouch_bone)
+        # tween.tween_property(crouch_bone, "scale", Vector3.ONE, crouch_tween_duration)
+        var tween = tween_property("body_scale", jump_scale, crouch_tween_duration)
+        tween.tween_property(self, "body_scale", Vector3.ONE, crouch_tween_duration)
+        
+
+
+func _set_body_scale(new_scale: Vector3):
+    character_skeleton.set_bone_pose_scale(body_bone_index, new_scale)

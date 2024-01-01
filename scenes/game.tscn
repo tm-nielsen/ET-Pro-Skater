@@ -1,12 +1,11 @@
-[gd_scene load_steps=22 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=21 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_jnuqt"]
 [ext_resource type="Script" path="res://scripts/character/character_jump_manager.gd" id="2_d001m"]
-[ext_resource type="Script" path="res://scripts/character/character_animator.gd" id="2_qe53s"]
+[ext_resource type="PackedScene" uid="uid://dm7wuk16qk0ue" path="res://scenes/prefabs/animated_character.tscn" id="4_xihqh"]
 [ext_resource type="PackedScene" uid="uid://bsm8bywv4p76x" path="res://3d assets/models/park_objects/trapezoid.blend" id="5_2pfh7"]
 [ext_resource type="Script" path="res://scripts/character/character_trick_manager.gd" id="5_3sunj"]
-[ext_resource type="Script" path="res://scripts/character/polish/bobblehead.gd" id="5_ytnix"]
 [ext_resource type="Material" uid="uid://bm8e80ox4usv6" path="res://3d assets/materials/grid_material.tres" id="6_7o7re"]
 [ext_resource type="Script" path="res://scripts/character/character_trick_animator.gd" id="7_o65v5"]
 
@@ -75,7 +74,7 @@ stretch_shrink = 8
 
 [node name="GameViewport" type="SubViewport" parent="GameViewportContainer"]
 handle_input_locally = false
-size = Vector2i(144, 81)
+size = Vector2i(135, 135)
 render_target_update_mode = 4
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="GameViewportContainer/GameViewport"]
@@ -90,6 +89,8 @@ transform = Transform3D(0.994805, -0.0566783, 0.084566, 0, 0.830683, 0.556746, -
 current = true
 script = ExtResource("1_jnuqt")
 target = NodePath("../Character")
+position_offset = Vector3(1, 1.5, 2)
+look_offset = Vector3(0.5, 1, 0)
 
 [node name="Character" type="CharacterBody3D" parent="GameViewportContainer/GameViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -111,9 +112,10 @@ shape = SubResource("CapsuleShape3D_cngjg")
 transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, -0.2, 0.8)
 shape = SubResource("CapsuleShape3D_cngjg")
 
-[node name="Animator" type="Node3D" parent="GameViewportContainer/GameViewport/Character" node_paths=PackedStringArray("crouch_bone")]
-script = ExtResource("2_qe53s")
-crouch_bone = NodePath("CrouchBone")
+[node name="AnimatedCharacter" parent="GameViewportContainer/GameViewport/Character" instance=ExtResource("4_xihqh")]
+
+[node name="Animator" type="Node3D" parent="GameViewportContainer/GameViewport/Character"]
+visible = false
 
 [node name="CrouchBone" type="Node3D" parent="GameViewportContainer/GameViewport/Character/Animator"]
 
@@ -132,10 +134,8 @@ surface_material_override/0 = SubResource("StandardMaterial3D_lww7n")
 [node name="Neck" type="Node3D" parent="GameViewportContainer/GameViewport/Character/Animator/CrouchBone"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
-[node name="HeadBone" type="Node3D" parent="GameViewportContainer/GameViewport/Character/Animator" node_paths=PackedStringArray("neck_node")]
+[node name="HeadBone" type="Node3D" parent="GameViewportContainer/GameViewport/Character/Animator"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-script = ExtResource("5_ytnix")
-neck_node = NodePath("../CrouchBone/Neck")
 
 [node name="HeadMesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character/Animator/HeadBone"]
 transform = Transform3D(1, 0, 0, 0, -0.173648, -0.984808, 0, 0.984808, -0.173648, 0, 0.5, 0)
@@ -154,10 +154,10 @@ script = ExtResource("5_3sunj")
 rotation_node = NodePath("..")
 trick_animator = NodePath("CharacterTrickAnimator")
 
-[node name="CharacterTrickAnimator" type="Node3D" parent="GameViewportContainer/GameViewport/Character/TrickManager" node_paths=PackedStringArray("board_bone")]
+[node name="CharacterTrickAnimator" type="Node3D" parent="GameViewportContainer/GameViewport/Character/TrickManager" node_paths=PackedStringArray("character_animator")]
 script = ExtResource("7_o65v5")
-board_bone = NodePath("../../Animator/BoardBone")
-kicklip_offset = Vector3(0, -0.5, -0.2)
+character_animator = NodePath("../../AnimatedCharacter")
+kicklip_offset = Vector3(-0.1, -0.3, 0)
 
 [node name="Ground" type="StaticBody3D" parent="GameViewportContainer/GameViewport"]
 
