@@ -18,6 +18,7 @@ var is_crouched: bool
 func process_jumps(character_controller: CharacterController):
     if CharacterController.is_grounded:
         if is_crouched:
+            process_tilt_hops(character_controller)
             store_ollie_potential(character_controller)
         if Input.is_action_just_released("crouch"):
             character_controller.velocity += jump_force * Vector3.UP
@@ -28,23 +29,37 @@ func process_jumps(character_controller: CharacterController):
     if ollie_potential != 0:
         var vertical_input_axis = Input.get_axis("down", "up")
         if vertical_input_axis != stored_ollie_direction:
-            var ollie_impulse = ollie_force.y * Vector3.UP
-            ollie_impulse -= CharacterController.forward * ollie_force.x * stored_ollie_direction
-
-            var curved_ollie_strength = ollie_window_curve.sample(1.0 - ollie_potential)
-
-            character_controller.velocity += ollie_impulse * curved_ollie_strength
-            end_ollie_window()
-
-            var horizontal_input_axis = Input.get_axis("left", "right")
-            character_controller.ollied.emit(horizontal_input_axis)
+            execute_ollie(character_controller)
     
     is_crouched = Input.is_action_pressed("crouch")
 
 
+func process_tilt_hops(character_controller: CharacterController):
+    var vertical_input_axis = Input.get_axis("down", "up")
+    if stored_ollie_direction != 0 && vertical_input_axis != stored_ollie_direction:
+        execute_ollie(character_controller, false)
+
+
+func execute_ollie(character_controller: CharacterController, curve_with_stored_potential := true):
+    var ollie_impulse = ollie_force.y * Vector3.UP
+    ollie_impulse -= CharacterController.forward * ollie_force.x * stored_ollie_direction
+
+    if curve_with_stored_potential:
+        var curved_ollie_strength = ollie_window_curve.sample(1.0 - ollie_potential)
+        ollie_impulse *= curved_ollie_strength
+
+    character_controller.velocity += ollie_impulse
+    end_ollie_window()
+
+    var horizontal_input_axis = Input.get_axis("left", "right")
+    character_controller.ollied.emit(horizontal_input_axis)
+
+
 func store_ollie_potential(character_controller: CharacterController):
     var current_tilt = Input.get_axis("down", "up")
-    if current_tilt != 0 && current_tilt != stored_ollie_direction:
+    if current_tilt == 0:
+        stored_ollie_direction = 0
+    elif current_tilt != stored_ollie_direction:
         start_ollie_window(current_tilt, character_controller)
 
 
