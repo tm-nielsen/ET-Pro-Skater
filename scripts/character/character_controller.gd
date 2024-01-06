@@ -21,12 +21,15 @@ static var forward: Vector3
 var can_push := true
 
 
+func _ready():
+    jump_manager.setup(self)
+
 func _physics_process(delta):
-    jump_manager.process_jumps(self)
+    jump_manager.process_jumps()
 
     process_landings()
     if is_on_floor():
-        if !Input.is_action_pressed("crouch") || Input.get_axis("down", "up") == 0:
+        if !InputProxy.is_crouched || InputProxy.vertical_axis == 0:
             process_pushing()
             process_turning(delta)
         apply_slope_force(delta)
@@ -46,7 +49,7 @@ func process_landings():
 
 
 func process_pushing():
-    if can_push and Input.is_action_just_pressed("push"):
+    if can_push and InputProxy.just_pushed:
         if is_backwards:
             velocity -= push_force * -basis.z
         else:
@@ -62,10 +65,8 @@ func _enable_pushing():
 
 
 func process_turning(delta):
-    if Input.is_action_pressed("left"):
-        _turn(turn_force * delta)
-    if Input.is_action_pressed("right"):
-        _turn(-turn_force * delta)
+    if InputProxy.horizontal_axis != 0:
+        _turn(-turn_force * InputProxy.horizontal_axis * delta)
 
 func _turn(turn_angle: float):
     rotate_y(turn_angle)
@@ -93,6 +94,6 @@ func apply_slope_force(delta):
     var slope_vector = floor_normal * Vector3(1, 0, 1)
     var force_direction = Plane(floor_normal).project(slope_vector)
     var force = force_direction * slope_force * delta
-    if Input.is_action_pressed("crouch"):
+    if InputProxy.is_crouched:
         force *= slope_force_crouch_multiplier
     velocity += force

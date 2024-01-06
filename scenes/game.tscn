@@ -172,6 +172,8 @@ surface_material_override/0 = ExtResource("6_7o7re")
 [node name="trapezoid" parent="." instance=ExtResource("5_2pfh7")]
 transform = Transform3D(-2.18557e-07, 0, 5, 0, 5, 0, -5, 0, -2.18557e-07, 0, 0, -50)
 
+[connection signal="landed" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/AnimatedCharacter" method="_on_character_landed"]
 [connection signal="landed" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_landed"]
+[connection signal="left_ground" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/AnimatedCharacter" method="_on_character_left_ground"]
 [connection signal="left_ground" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_left_ground"]
 [connection signal="ollied" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_ollied"]

@@ -28,46 +28,63 @@ extends TweenableNode
 var body_scale: Vector3: set = _set_body_scale
 
 
-func _physics_process(_delta):
-    update_axis("right", "left", start_turn_tween)
-    update_axis("up", "down", start_tilt_tween)
-    process_crouch_tweens()
+func _ready():
+    InputProxy.crouch_pressed.connect(on_crouch_pressed)
+    InputProxy.crouch_released.connect(on_crouch_released)
+    InputProxy.direction_changed.connect(on_input_direction_changed)
 
 
-func update_axis(action_a_name: StringName, action_b_name: StringName, update_method: Callable):
-    var a_toggled = Input.is_action_just_pressed(action_a_name) || Input.is_action_just_released(action_a_name)
-    var b_toggled = Input.is_action_just_pressed(action_b_name) || Input.is_action_just_released(action_b_name)
-    if a_toggled || b_toggled:
-        var axis_value = Input.get_axis(action_a_name, action_b_name)
-        if !CharacterController.is_grounded:
-            axis_value = 0
-        elif CharacterController.is_backwards:
-            axis_value *= -1
-        update_method.call(axis_value)
+func on_crouch_pressed():
+    tween_property("body_scale", crouch_scale, crouch_tween_duration)
+
+func on_crouch_released():
+    var tween = tween_property("body_scale", jump_scale, crouch_tween_duration)
+    tween.tween_property(self, "body_scale", Vector3.ONE, crouch_tween_duration)
+
+
+func on_input_direction_changed(input_direction: Vector2i):
+    var old_input_direction = InputProxy.direction
+
+    var modified_axis: int
+    var update_method: Callable
+
+    if input_direction.x != old_input_direction.x:
+        modified_axis = input_direction.x
+        update_method = start_turn_tween
+    else:
+        modified_axis = input_direction.y
+        update_method = start_tilt_tween
+
+    if !CharacterController.is_grounded:
+        modified_axis = 0
+    elif CharacterController.is_backwards:
+        modified_axis *= -1
+
+    update_method.call(modified_axis)
 
 
 func start_turn_tween(turn_direction: float):
-    tween_property("rotation:z", turn_direction * turn_angle, turn_tween_duration)
+    tween_property("rotation:z", -turn_direction * turn_angle, turn_tween_duration)
 
 
 func start_tilt_tween(tilt_direction: float):
-    tween_property("rotation:x", tilt_angle * tilt_direction, tilt_tween_duration)
+    tween_property("rotation:x", -tilt_angle * tilt_direction, tilt_tween_duration)
     var offset_position = position
     offset_position.y = tilt_offset.y * abs(tilt_direction)
-    offset_position.z = tilt_direction * tilt_offset.x
+    offset_position.z = -tilt_direction * tilt_offset.x
     tween_property("position", offset_position, tilt_tween_duration)
 
 
-func process_crouch_tweens():
-    if Input.is_action_just_pressed("crouch"):
-        # tween_property("scale", crouch_scale, crouch_tween_duration, crouch_bone)
-        tween_property("body_scale", crouch_scale, crouch_tween_duration)
-    elif Input.is_action_just_released("crouch"):
-        # var tween = tween_property("scale", jump_scale, crouch_tween_duration, crouch_bone)
-        # tween.tween_property(crouch_bone, "scale", Vector3.ONE, crouch_tween_duration)
-        var tween = tween_property("body_scale", jump_scale, crouch_tween_duration)
-        tween.tween_property(self, "body_scale", Vector3.ONE, crouch_tween_duration)
-        
+func _on_character_left_ground():
+    start_turn_tween(0)
+    start_tilt_tween(0)
+
+func _on_character_landed():
+    var input_direction = InputProxy.direction
+    if CharacterController.is_backwards:
+        input_direction *= -1
+    start_turn_tween(input_direction.x)
+    start_tilt_tween(input_direction.y)
 
 
 func _set_body_scale(new_scale: Vector3):

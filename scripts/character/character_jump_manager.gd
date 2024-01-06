@@ -7,56 +7,52 @@ extends Resource
 @export var ollie_window_duration := 0.5
 @export var ollie_window_curve : Curve
 
+var character_controller: CharacterController
+
 var ollie_window_tween: Tween
 
 var stored_ollie_direction: float
 var ollie_potential: float
 
-var is_crouched: bool
+var was_crouched_last_frame: bool
 
 
-func process_jumps(character_controller: CharacterController):
+func setup(p_character_controller: CharacterController):
+    character_controller = p_character_controller
+    InputProxy.direction_changed.connect(_on_input_direction_changed)
+
+func process_jumps():
     if CharacterController.is_grounded:
-        if is_crouched:
-            process_tilt_hops(character_controller)
-            store_ollie_potential(character_controller)
-        if Input.is_action_just_released("crouch"):
+        if was_crouched_last_frame:
+            store_ollie_potential()
+        if InputProxy.just_uncrouched:
             character_controller.velocity += jump_force * Vector3.UP
-        if Input.is_action_just_pressed("crouch"):
+        if InputProxy.just_crouched:
             end_ollie_window()
-            stored_ollie_direction = Input.get_axis("down", "up")
             
     if ollie_potential != 0:
-        var vertical_input_axis = Input.get_axis("down", "up")
+        var vertical_input_axis = InputProxy.vertical_axis
         if vertical_input_axis != stored_ollie_direction:
-            execute_ollie(character_controller)
+            var curved_ollie_strength = ollie_window_curve.sample(1.0 - ollie_potential)
+            execute_ollie(curved_ollie_strength)
     
-    is_crouched = Input.is_action_pressed("crouch")
+    was_crouched_last_frame = InputProxy.is_crouched
 
 
-func process_tilt_hops(character_controller: CharacterController):
-    var vertical_input_axis = Input.get_axis("down", "up")
-    if stored_ollie_direction != 0 && vertical_input_axis != stored_ollie_direction:
-        execute_ollie(character_controller, false)
-
-
-func execute_ollie(character_controller: CharacterController, curve_with_stored_potential := true):
+func execute_ollie(force_scale := 1.0):
     var ollie_impulse = ollie_force.y * Vector3.UP
     ollie_impulse -= CharacterController.forward * ollie_force.x * stored_ollie_direction
 
-    if curve_with_stored_potential:
-        var curved_ollie_strength = ollie_window_curve.sample(1.0 - ollie_potential)
-        ollie_impulse *= curved_ollie_strength
-
-    character_controller.velocity += ollie_impulse
+    character_controller.velocity += ollie_impulse * force_scale
     end_ollie_window()
+    stored_ollie_direction = InputProxy.vertical_axis
 
-    var horizontal_input_axis = Input.get_axis("left", "right")
+    var horizontal_input_axis = InputProxy.horizontal_axis
     character_controller.ollied.emit(horizontal_input_axis)
 
 
-func store_ollie_potential(character_controller: CharacterController):
-    var current_tilt = Input.get_axis("down", "up")
+func store_ollie_potential():
+    var current_tilt = InputProxy.vertical_axis
     if current_tilt == 0:
         stored_ollie_direction = 0
     elif current_tilt != stored_ollie_direction:
@@ -80,5 +76,11 @@ func end_ollie_window():
     if ollie_window_tween:
         ollie_window_tween.kill()
     
-    stored_ollie_direction = 0
     ollie_potential = 0
+
+
+func _on_input_direction_changed(input_direction: Vector2i):
+    if CharacterController.is_grounded && InputProxy.is_crouched:
+        var old_tilt = InputProxy.direction.y
+        if input_direction.y != old_tilt && old_tilt != 0:
+            execute_ollie()

@@ -18,19 +18,19 @@ func _physics_process(delta):
     if CharacterController.is_grounded || trick_in_progress:
         return
 
-    if Input.is_action_pressed("crouch"):
+    if InputProxy.is_crouched:
         process_grab_tricks(delta)
-    elif Input.is_action_pressed("push"):
+    elif InputProxy.is_pushing:
         process_push_tricks()
     else:
         process_neutral_tricks()
 
 
 func process_grab_tricks(delta):
-    var horizontal_input = Input.get_axis("right", "left")
-    rotation_node.rotation.y += rotation_speed * horizontal_input * delta
+    var horizontal_input = InputProxy.horizontal_axis
+    rotation_node.rotation.y -= rotation_speed * horizontal_input * delta
 
-    # var vertical_input = Input.get_axis("up", "down")
+    # var vertical_input = InputProxy.vertical_axis
     # rotation_node.rotation.x += rotation_speed * vertical_input * delta
 
 
