@@ -110,7 +110,7 @@ func process_neutral_direction_changed(input_direction: Vector2i):
 
         elif aligned_vertical_input < 0:
             trick_animator.prep_shuvit()
-        elif aligned_vertical_input < 0:
+        elif old_input_direction.y * CharacterController.is_forward_sign < 0:
             trick_animator.unprep_shuvit()
 
 
