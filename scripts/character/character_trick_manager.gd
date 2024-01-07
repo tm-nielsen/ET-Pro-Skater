@@ -92,7 +92,7 @@ func process_neutral_direction_changed(input_direction: Vector2i):
     var horizontal_axis_changed = old_input_direction.x != input_direction.x
 
     if horizontal_axis_changed && input_direction.x != 0:
-        if old_input_direction.y < 0:
+        if old_input_direction.y * CharacterController.is_forward_sign < 0:
             trick_animator.start_shuvit(input_direction.x)
             trick_in_progress = true
             return
@@ -102,14 +102,15 @@ func process_neutral_direction_changed(input_direction: Vector2i):
         return
 
     if vertical_axis_changed:
-        if input_direction.y > 0:
+        var aligned_vertical_input = input_direction.y * CharacterController.is_forward_sign
+        if aligned_vertical_input > 0:
             trick_animator.start_dolphin_flip(input_direction.y)
             trick_in_progress = true
             return
 
-        elif input_direction.y < 0:
+        elif aligned_vertical_input < 0:
             trick_animator.prep_shuvit()
-        elif old_input_direction.y < 0:
+        elif aligned_vertical_input < 0:
             trick_animator.unprep_shuvit()
 
 
