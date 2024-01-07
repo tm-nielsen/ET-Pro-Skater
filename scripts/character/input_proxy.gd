@@ -16,9 +16,6 @@ var direction: Vector2i
 var horizontal_axis: int
 var vertical_axis: int
 
-var horizontal_axis_just_changed: bool
-var vertical_axis_just_changed: bool
-
 
 func _process(_delta):
     process_buttons()

@@ -157,7 +157,6 @@ trick_animator = NodePath("CharacterTrickAnimator")
 [node name="CharacterTrickAnimator" type="Node3D" parent="GameViewportContainer/GameViewport/Character/TrickManager" node_paths=PackedStringArray("character_animator")]
 script = ExtResource("7_o65v5")
 character_animator = NodePath("../../AnimatedCharacter")
-kicklip_offset = Vector3(-0.1, -0.3, 0)
 
 [node name="Ground" type="StaticBody3D" parent="GameViewportContainer/GameViewport"]
 
