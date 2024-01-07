@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=23 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_jnuqt"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bsm8bywv4p76x" path="res://3d assets/models/park_objects/trapezoid.blend" id="5_2pfh7"]
 [ext_resource type="Script" path="res://scripts/character/character_trick_manager.gd" id="5_3sunj"]
 [ext_resource type="Material" uid="uid://bm8e80ox4usv6" path="res://3d assets/materials/grid_material.tres" id="6_7o7re"]
+[ext_resource type="Script" path="res://scripts/character/character_board_animator.gd" id="7_fnltb"]
 [ext_resource type="Script" path="res://scripts/character/character_trick_animator.gd" id="7_o65v5"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
@@ -47,6 +48,10 @@ rings = 1
 
 [sub_resource type="BoxMesh" id="BoxMesh_irx74"]
 size = Vector3(0.6, 0.1, 2)
+
+[sub_resource type="Curve" id="Curve_h0tlr"]
+_data = [Vector2(0.00706714, 0.0342858), 0.0, 2.37181, 0, 0, Vector2(0.226148, 0.274286), 0.856134, 0.856134, 0, 0, Vector2(0.74205, 1), 2.39577, 2.39577, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 4
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_rquj0"]
 
@@ -154,9 +159,15 @@ script = ExtResource("5_3sunj")
 rotation_node = NodePath("..")
 trick_animator = NodePath("CharacterTrickAnimator")
 
-[node name="CharacterTrickAnimator" type="Node3D" parent="GameViewportContainer/GameViewport/Character/TrickManager" node_paths=PackedStringArray("character_animator")]
+[node name="CharacterTrickAnimator" type="Node3D" parent="GameViewportContainer/GameViewport/Character/TrickManager" node_paths=PackedStringArray("board_animator", "rotation_node")]
 script = ExtResource("7_o65v5")
-character_animator = NodePath("../../AnimatedCharacter")
+board_animator = NodePath("CharacterBoardAnimator")
+rotation_node = NodePath("../..")
+body_flip_curve = SubResource("Curve_h0tlr")
+
+[node name="CharacterBoardAnimator" type="Node3D" parent="GameViewportContainer/GameViewport/Character/TrickManager/CharacterTrickAnimator" node_paths=PackedStringArray("character_animator")]
+script = ExtResource("7_fnltb")
+character_animator = NodePath("../../../AnimatedCharacter")
 
 [node name="Ground" type="StaticBody3D" parent="GameViewportContainer/GameViewport"]
 

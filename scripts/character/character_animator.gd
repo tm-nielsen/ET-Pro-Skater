@@ -57,8 +57,7 @@ func on_input_direction_changed(input_direction: Vector2i):
 
     if !CharacterController.is_grounded:
         modified_axis = 0
-    elif CharacterController.is_backwards:
-        modified_axis *= -1
+    modified_axis *= CharacterController.is_forward_sign
 
     update_method.call(modified_axis)
 
@@ -81,8 +80,7 @@ func _on_character_left_ground():
 
 func _on_character_landed():
     var input_direction = InputProxy.direction
-    if CharacterController.is_backwards:
-        input_direction *= -1
+    input_direction *= CharacterController.is_forward_sign
     start_turn_tween(input_direction.x)
     start_tilt_tween(input_direction.y)
 

@@ -9,8 +9,10 @@ extends TweenableNode
 @export var rotation_speed := 12
 @export var landing_safe_margin := PI / 3
 
-# @export var tilt_angle := 1.4
-# @export var tilt_tween_duration := 0.4
+@export var body_flip_input_window_duration := 100
+
+var body_tilt_timestamp: float
+var stored_body_tilt: int
 
 var initial_y_rotation: float
 var trick_in_progress: bool
@@ -33,8 +35,19 @@ func process_grab_tricks(delta):
         var horizontal_input = InputProxy.horizontal_axis
         rotation_node.rotation.y -= rotation_speed * horizontal_input * delta
 
-    # if InputProxy.just_uncrouched:
-    #     start_tilt_grab(0)
+    if InputProxy.just_crouched:
+        start_grab_tilt(InputProxy.vertical_axis)
+    if InputProxy.just_uncrouched:
+        trick_animator.start_grab_tilt(0)
+
+func start_grab_tilt(tilt_direction: int):
+    trick_animator.start_grab_tilt(tilt_direction)
+    if tilt_direction != 0:
+        start_body_flip_input_window(tilt_direction)
+
+func start_body_flip_input_window(tilt_direction: int):
+    stored_body_tilt = tilt_direction
+    body_tilt_timestamp = Time.get_ticks_msec()
 
 
 func process_push_tricks():
@@ -46,19 +59,33 @@ func on_input_direction_changed(input_direction: Vector2i):
         return
 
     if InputProxy.is_crouched:
-        # start_tilt_grab(input_direction.y)
-        pass
+        process_crouched_direction_changed(input_direction)
     elif InputProxy.is_pushing:
         pass
     else:
-        process_neutral_trick_inputs(input_direction)
+        process_neutral_direction_changed(input_direction)
 
 
-# func start_tilt_grab(tilt_direction: int):
-#     tween_property("rotation:x", -tilt_angle * tilt_direction, tilt_tween_duration, rotation_node)
+func process_crouched_direction_changed(input_direction: Vector2i, ingore_unchanged_axis := true):
+    if input_direction.y == InputProxy.direction.y && ingore_unchanged_axis:
+        return
+    
+    var tilt_direction = input_direction.y
+    var previous_tilt_direction = InputProxy.direction.y
+
+    if previous_tilt_direction != 0:
+        stored_body_tilt = previous_tilt_direction
+        body_tilt_timestamp = Time.get_ticks_msec()
+
+    if tilt_direction != 0 && tilt_direction != stored_body_tilt:
+        if Time.get_ticks_msec() - body_tilt_timestamp < body_flip_input_window_duration:
+            trick_animator.start_body_flip(tilt_direction)
+            trick_in_progress = true
+    else:
+        start_grab_tilt(tilt_direction)
 
 
-func process_neutral_trick_inputs(input_direction: Vector2i):
+func process_neutral_direction_changed(input_direction: Vector2i):
     var old_input_direction = InputProxy.direction
 
     var vertical_axis_changed = old_input_direction.y != input_direction.y
@@ -93,6 +120,8 @@ func on_character_ollied(flick_direction: float):
 
 func on_trick_completed():
     trick_in_progress = false
+    if InputProxy.is_crouched:
+        process_crouched_direction_changed(InputProxy.direction, false)
 
 
 func on_character_left_ground():
@@ -110,6 +139,7 @@ func on_character_landed():
     var snapped_rotation = get_small_angle(initial_y_rotation + snapped_rotation_delta)
 
     if abs(y_rotation - snapped_rotation) < landing_safe_margin:
+        trick_animator.reset()
         rotation_node.rotation.y = snapped_rotation
         if int(snapped_rotation_delta / PI) % 2:
             CharacterController.is_backwards = !CharacterController.is_backwards

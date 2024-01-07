@@ -7,6 +7,7 @@ signal ollied(flick_direction: float)
 
 static var is_grounded: bool
 static var is_backwards: bool
+static var is_forward_sign: get = _get_forward_sign
 static var forward: Vector3
 
 @export var push_force := 20.0
@@ -97,3 +98,7 @@ func apply_slope_force(delta):
     if InputProxy.is_crouched:
         force *= slope_force_crouch_multiplier
     velocity += force
+
+
+static func _get_forward_sign() -> int:
+    return -1 if is_backwards else 1
