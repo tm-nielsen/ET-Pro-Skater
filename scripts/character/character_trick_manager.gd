@@ -100,6 +100,10 @@ func on_character_left_ground():
 
 
 func on_character_landed():
+    if trick_in_progress:
+        crash()
+        return
+
     var y_rotation = get_small_angle(rotation_node.rotation.y)
     var rotation_delta = y_rotation - initial_y_rotation
     var snapped_rotation_delta = snappedf(rotation_delta, PI)
@@ -110,10 +114,14 @@ func on_character_landed():
         if int(snapped_rotation_delta / PI) % 2:
             CharacterController.is_backwards = !CharacterController.is_backwards
     else:
-        push_warning("Would be a crash, needs to be implemented")
-        rotation_node.rotation.y = 0
-        CharacterController.is_backwards = false
-        rotation_node.velocity = Vector3.ZERO
+        crash()
+
+func crash():
+    push_warning("Would be a crash, needs to be implemented")
+    rotation_node.rotation.y = 0
+    CharacterController.is_backwards = false
+    rotation_node.velocity = Vector3.ZERO
+
 
 
 func get_small_angle(angle: float) -> float:
