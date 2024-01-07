@@ -13,6 +13,7 @@ var ollie_window_tween: Tween
 
 var stored_ollie_direction: float
 var ollie_potential: float
+var has_ollied: bool
 
 var was_crouched_last_frame: bool
 
@@ -23,14 +24,14 @@ func setup(p_character_controller: CharacterController):
 
 func process_jumps():
     if CharacterController.is_grounded:
-        if was_crouched_last_frame:
+        if was_crouched_last_frame && !has_ollied:
             store_ollie_potential()
         if InputProxy.just_uncrouched:
             character_controller.velocity += jump_force * Vector3.UP
         if InputProxy.just_crouched:
             end_ollie_window()
             
-    if ollie_potential != 0:
+    if ollie_potential != 0 && !has_ollied:
         var vertical_input_axis = InputProxy.vertical_axis
         if vertical_input_axis != stored_ollie_direction:
             var curved_ollie_strength = ollie_window_curve.sample(1.0 - ollie_potential)
@@ -44,6 +45,7 @@ func execute_ollie(force_scale := 1.0):
     ollie_impulse -= CharacterController.forward * ollie_force.x * stored_ollie_direction
 
     character_controller.velocity += ollie_impulse * force_scale
+    has_ollied = true
     end_ollie_window()
     stored_ollie_direction = InputProxy.vertical_axis
 
@@ -77,6 +79,10 @@ func end_ollie_window():
         ollie_window_tween.kill()
     
     ollie_potential = 0
+
+
+func _on_character_landed():
+    has_ollied = false
 
 
 func _on_input_direction_changed(input_direction: Vector2i):
