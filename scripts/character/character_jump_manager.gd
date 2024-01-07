@@ -20,6 +20,7 @@ var was_crouched_last_frame: bool
 
 func setup(p_character_controller: CharacterController):
     character_controller = p_character_controller
+    character_controller.landed.connect(_on_character_landed)
     InputProxy.direction_changed.connect(_on_input_direction_changed)
 
 func process_jumps():
