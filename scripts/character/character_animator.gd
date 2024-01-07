@@ -43,23 +43,15 @@ func on_crouch_released():
 
 
 func on_input_direction_changed(input_direction: Vector2i):
+    if !CharacterController.is_grounded:
+        return
+
     var old_input_direction = InputProxy.direction
 
-    var modified_axis: int
-    var update_method: Callable
-
     if input_direction.x != old_input_direction.x:
-        modified_axis = input_direction.x
-        update_method = start_turn_tween
+        start_turn_tween(input_direction.x * CharacterController.is_forward_sign)
     else:
-        modified_axis = input_direction.y
-        update_method = start_tilt_tween
-
-    if !CharacterController.is_grounded:
-        modified_axis = 0
-    modified_axis *= CharacterController.is_forward_sign
-
-    update_method.call(modified_axis)
+        start_tilt_tween(input_direction.y * CharacterController.is_forward_sign)
 
 
 func start_turn_tween(turn_direction: float):

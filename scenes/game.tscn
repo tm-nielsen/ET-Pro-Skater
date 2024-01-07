@@ -26,11 +26,11 @@ ollie_window_duration = 0.5
 ollie_window_curve = SubResource("Curve_cbr3o")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_428qx"]
-size = Vector3(0.6, 0.1, 2)
+size = Vector3(0.6, 0.1, 1.75)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_cngjg"]
-radius = 0.1
-height = 0.6
+radius = 0.08
+height = 0.45
 
 [sub_resource type="BoxMesh" id="BoxMesh_1ye46"]
 
@@ -106,15 +106,15 @@ jump_manager = SubResource("Resource_714km")
 gravity = 50.0
 
 [node name="BoardCollider" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Character"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
 shape = SubResource("BoxShape3D_428qx")
 
 [node name="FrontWheelCollider" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Character"]
-transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, -0.2, -0.8)
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, -0.1, -0.525)
 shape = SubResource("CapsuleShape3D_cngjg")
 
 [node name="BackWheelCollider" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Character"]
-transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, -0.2, 0.8)
+transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, -4.37114e-08, 1.91069e-15, 0, -0.1, 0.525)
 shape = SubResource("CapsuleShape3D_cngjg")
 
 [node name="AnimatedCharacter" parent="GameViewportContainer/GameViewport/Character" instance=ExtResource("4_xihqh")]

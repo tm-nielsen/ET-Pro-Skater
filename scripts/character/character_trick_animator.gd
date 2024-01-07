@@ -56,7 +56,9 @@ func start_body_flip(flip_direction: float):
     body_flip_initial_rotation *= flip_direction
     body_flip_initial_rotation *= CharacterController.is_forward_sign
 
-    create_tween().tween_method(_set_body_flip_rotation, 0.0, 1.0, body_flip_duration)
+    var body_flip_tween = create_tween()
+    body_flip_tween.tween_method(_set_body_flip_rotation, 0.0, 1.0, body_flip_duration)
+    active_tweens.append(body_flip_tween)
     _tween_commitment(body_flip_commitment)
 
 func _set_body_flip_rotation(t: float):

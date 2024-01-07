@@ -81,6 +81,8 @@ func process_crouched_direction_changed(input_direction: Vector2i, ingore_unchan
         if Time.get_ticks_msec() - body_tilt_timestamp < body_flip_input_window_duration:
             trick_animator.start_body_flip(tilt_direction)
             trick_in_progress = true
+        else:
+            start_grab_tilt(tilt_direction)
     else:
         start_grab_tilt(tilt_direction)
 
@@ -149,10 +151,10 @@ func on_character_landed():
 
 func crash():
     push_warning("Would be a crash, needs to be implemented")
-    rotation_node.rotation.y = 0
     CharacterController.is_backwards = false
+    rotation_node.rotation = Vector3.ZERO
     rotation_node.velocity = Vector3.ZERO
-
+    trick_animator.reset()
 
 
 func get_small_angle(angle: float) -> float:
