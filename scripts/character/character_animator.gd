@@ -50,7 +50,7 @@ func on_input_direction_changed(input_direction: Vector2i):
 
     if input_direction.x != old_input_direction.x:
         start_turn_tween(input_direction.x * CharacterController.is_forward_sign)
-    else:
+    if input_direction.y != old_input_direction.y:
         start_tilt_tween(input_direction.y * CharacterController.is_forward_sign)
 
 
