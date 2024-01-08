@@ -4,7 +4,6 @@ extends CharacterBody3D
 signal left_ground
 signal landed
 signal hit_wall(wall_normal: Vector3)
-signal ollied(flick_direction: float)
 
 static var is_grounded: bool
 static var is_backwards: bool
@@ -14,7 +13,6 @@ static var forward: Vector3
 @export var push_force := 20.0
 @export var push_delay := 1.0
 @export var turn_force := 10.0
-@export var jump_manager: CharacterJumpManager
 @export_range(0, 1) var ground_friction := 0.005
 @export var gravity := 20.0
 @export var slope_force := 20.0
@@ -23,12 +21,7 @@ static var forward: Vector3
 var can_push := true
 
 
-func _ready():
-    jump_manager.setup(self)
-
 func _physics_process(delta):
-    jump_manager.process_jumps()
-
     process_landings()
     if is_on_floor():
         if !InputProxy.is_crouched || InputProxy.vertical_axis == 0:

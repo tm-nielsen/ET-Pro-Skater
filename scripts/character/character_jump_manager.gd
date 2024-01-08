@@ -1,13 +1,18 @@
 class_name CharacterJumpManager
-extends Resource
+extends Node3D
 
-@export var jump_force := 10.0
-@export var ollie_force := Vector2(1.0, 8.0)
+enum OllieType { PARTIAL, PERFECT, TILT_HOP }
+
+signal ollied(type: OllieType)
+
+
+@export var character_controller: CharacterController
+
+@export var jump_force := 20.0
+@export var ollie_force := Vector2(1.0, 12.0)
 
 @export var ollie_window_duration := 0.5
 @export var ollie_window_curve : Curve
-
-var character_controller: CharacterController
 
 var ollie_window_tween: Tween
 
@@ -18,12 +23,11 @@ var has_ollied: bool
 var was_crouched_last_frame: bool
 
 
-func setup(p_character_controller: CharacterController):
-    character_controller = p_character_controller
+func _ready():
     character_controller.landed.connect(_on_character_landed)
     InputProxy.direction_changed.connect(_on_input_direction_changed)
 
-func process_jumps():
+func _process(_delta):
     if CharacterController.is_grounded:
         if was_crouched_last_frame && !has_ollied:
             store_ollie_potential()
@@ -37,6 +41,7 @@ func process_jumps():
         if vertical_input_axis != stored_ollie_direction:
             var curved_ollie_strength = ollie_window_curve.sample(1.0 - ollie_potential)
             execute_ollie(curved_ollie_strength)
+            ollied.emit(OllieType.PERFECT if ollie_potential == 1.0 else OllieType.PARTIAL)
     
     was_crouched_last_frame = InputProxy.is_crouched
 
@@ -49,9 +54,6 @@ func execute_ollie(force_scale := 1.0):
     has_ollied = true
     end_ollie_window()
     stored_ollie_direction = InputProxy.vertical_axis
-
-    var horizontal_input_axis = InputProxy.horizontal_axis
-    character_controller.ollied.emit(horizontal_input_axis)
 
 
 func store_ollie_potential():
@@ -91,3 +93,4 @@ func _on_input_direction_changed(input_direction: Vector2i):
         var old_tilt = InputProxy.direction.y
         if input_direction.y != old_tilt && old_tilt != 0:
             execute_ollie()
+            ollied.emit(OllieType.TILT_HOP)

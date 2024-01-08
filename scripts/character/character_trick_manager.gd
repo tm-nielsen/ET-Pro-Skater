@@ -1,6 +1,21 @@
 class_name CharacterTrickManager
 extends TweenableNode
 
+enum TrickType { NONE, PARTIAL_OLLIE, PERFECT_OLLIE, TILT_HOP,
+        GROUND_KICKFLIP, PARTIAL_OLLIE_KICKFLIP, PERFECT_OLLIE_KICKFLIP, AIR_KICKFLIP,
+        SHUVIT, DOLPHIN_FLIP,
+        FRONT_FLIP, BACK_FLIP }
+
+const OllieType = CharacterJumpManager.OllieType
+
+signal trick_completed(trick_type: TrickType)
+signal crashed()
+signal half_spins_landed(half_spin_count: int)
+signal grab_tilt_started(tilt_direction: int)
+signal grab_tilt_ended()
+signal wall_jumped()
+
+
 @export_subgroup("references")
 @export var character_body: CharacterBody3D
 @export var trick_animator: CharacterTrickAnimator
@@ -23,6 +38,9 @@ var wall_jump_direction: Vector3
 var has_wall_jumped: bool
 
 var initial_y_rotation: float
+var spin_delta: float
+
+var current_trick: TrickType
 var trick_in_progress: bool
 
 
@@ -41,7 +59,8 @@ func _physics_process(delta):
 func process_grab_tricks(delta):
     if InputProxy.is_crouched:
         var horizontal_input = InputProxy.horizontal_axis
-        character_body.rotation.y -= rotation_speed * horizontal_input * delta
+        spin_delta -= rotation_speed * horizontal_input * delta
+        character_body.rotation.y = initial_y_rotation + spin_delta
 
     if InputProxy.just_crouched:
         start_grab_tilt(InputProxy.vertical_axis)
@@ -56,6 +75,9 @@ func start_grab_tilt(tilt_direction: int):
     trick_animator.start_grab_tilt(tilt_direction)
     if tilt_direction != 0:
         start_body_flip_input_window(tilt_direction)
+        grab_tilt_started.emit(tilt_direction)
+    else:
+        grab_tilt_ended.emit()
 
 func start_body_flip_input_window(tilt_direction: int):
     stored_body_tilt = tilt_direction
@@ -92,7 +114,10 @@ func process_crouched_direction_changed(input_direction: Vector2i, ingore_unchan
     if tilt_direction != 0 && tilt_direction != stored_body_tilt:
         if Time.get_ticks_msec() - body_tilt_timestamp < body_flip_input_window_duration:
             trick_animator.start_body_flip(tilt_direction)
-            trick_in_progress = true
+            if tilt_direction > 0:
+                on_trick_started(TrickType.FRONT_FLIP)
+            else:
+                on_trick_started(TrickType.BACK_FLIP)
         else:
             start_grab_tilt(tilt_direction)
     else:
@@ -108,10 +133,10 @@ func process_neutral_direction_changed(input_direction: Vector2i):
     if horizontal_axis_changed && input_direction.x != 0:
         if old_input_direction.y * CharacterController.is_forward_sign < 0:
             trick_animator.start_shuvit(input_direction.x)
-            trick_in_progress = true
+            on_trick_started(TrickType.SHUVIT)
             return
 
-        trick_in_progress = true
+        on_trick_started(TrickType.AIR_KICKFLIP)
         trick_animator.start_kickflip(input_direction.x)
         return
 
@@ -119,7 +144,7 @@ func process_neutral_direction_changed(input_direction: Vector2i):
         var aligned_vertical_input = input_direction.y * CharacterController.is_forward_sign
         if aligned_vertical_input > 0:
             trick_animator.start_dolphin_flip(input_direction.y)
-            trick_in_progress = true
+            on_trick_started(TrickType.DOLPHIN_FLIP)
             return
 
         elif aligned_vertical_input < 0:
@@ -128,12 +153,35 @@ func process_neutral_direction_changed(input_direction: Vector2i):
             trick_animator.unprep_shuvit()
 
 
-func on_character_ollied(flick_direction: float):
+func on_character_ollied(ollie_type: OllieType):
+    var flick_direction = InputProxy.horizontal_axis
     if flick_direction != 0:
-        trick_in_progress = true
         trick_animator.start_kickflip(flick_direction)
 
+        var kickflip_type = TrickType.GROUND_KICKFLIP
+        match(ollie_type):
+            OllieType.PARTIAL:
+                kickflip_type = TrickType.PARTIAL_OLLIE_KICKFLIP
+            OllieType.PERFECT:
+                kickflip_type = TrickType.PERFECT_OLLIE_KICKFLIP
+        on_trick_started(kickflip_type)
+    else:
+        match(ollie_type):
+            OllieType.PARTIAL:
+                trick_completed.emit(TrickType.PARTIAL_OLLIE)
+            OllieType.PERFECT:
+                trick_completed.emit(TrickType.PERFECT_OLLIE)
+            OllieType.TILT_HOP:
+                trick_completed.emit(TrickType.TILT_HOP)
+
+
+func on_trick_started(trick_type: TrickType):
+    current_trick = trick_type
+    trick_in_progress = true
+
 func on_trick_completed():
+    trick_completed.emit(trick_in_progress)
+    current_trick = TrickType.NONE
     trick_in_progress = false
     if InputProxy.is_crouched:
         process_crouched_direction_changed(InputProxy.direction, false)
@@ -141,6 +189,7 @@ func on_trick_completed():
 
 func on_character_left_ground():
     initial_y_rotation = get_small_angle(character_body.rotation.y)
+    spin_delta = 0
 
 
 func on_character_landed():
@@ -163,6 +212,10 @@ func on_character_landed():
         character_body.rotation.y = snapped_rotation
         if int(snapped_rotation_delta / PI) % 2:
             CharacterController.is_backwards = !CharacterController.is_backwards
+        
+        var half_spin_count = round(spin_delta /PI)
+        if half_spin_count != 0:
+            half_spins_landed.emit(half_spin_count)
     else:
         crash()
 
@@ -172,6 +225,7 @@ func crash():
     character_body.rotation = Vector3.ZERO
     character_body.velocity = Vector3.ZERO
     trick_animator.reset()
+    crashed.emit()
 
 
 func on_character_hit_wall(wall_normal: Vector3):
@@ -194,6 +248,7 @@ func execute_wall_jump():
     trick_animator.start_grab_tilt(0)
 
     has_wall_jumped = true
+    wall_jumped.emit()
     wall_jump_direction = Vector3.ZERO
 
 

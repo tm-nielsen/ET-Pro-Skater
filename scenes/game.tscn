@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=19 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_jnuqt"]
@@ -14,16 +14,9 @@
 ambient_light_source = 2
 ambient_light_color = Color(1, 1, 1, 1)
 
-[sub_resource type="Curve" id="Curve_cbr3o"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(0.5, 1), 0.0, -49932.2, 1, 1, Vector2(0.50001, 0.5), -49932.2, -1.00002, 1, 1, Vector2(1, 0), -1.00002, 0.0, 1, 0]
+[sub_resource type="Curve" id="Curve_iwct2"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(0.50001, 0.4), 0.0, -0.800016, 0, 1, Vector2(1, 0), -0.800016, 0.0, 1, 0]
 point_count = 4
-
-[sub_resource type="Resource" id="Resource_714km"]
-script = ExtResource("2_d001m")
-jump_force = 20.0
-ollie_force = Vector2(1, 12)
-ollie_window_duration = 0.5
-ollie_window_curve = SubResource("Curve_cbr3o")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_428qx"]
 size = Vector3(0.6, 0.1, 1.75)
@@ -31,23 +24,6 @@ size = Vector3(0.6, 0.1, 1.75)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_cngjg"]
 radius = 0.08
 height = 0.45
-
-[sub_resource type="BoxMesh" id="BoxMesh_1ye46"]
-
-[sub_resource type="PrismMesh" id="PrismMesh_i7kpd"]
-size = Vector3(0.5, 0.8, 0.1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lww7n"]
-albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_vr257"]
-top_radius = 0.2
-height = 0.8
-radial_segments = 8
-rings = 1
-
-[sub_resource type="BoxMesh" id="BoxMesh_irx74"]
-size = Vector3(0.6, 0.1, 2)
 
 [sub_resource type="Curve" id="Curve_h0tlr"]
 _data = [Vector2(0.00706714, 0.0342858), 0.0, 2.37181, 0, 0, Vector2(0.226148, 0.274286), 0.856134, 0.856134, 0, 0, Vector2(0.74205, 1), 2.39577, 2.39577, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -108,8 +84,12 @@ look_offset = Vector3(0.5, 1, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 floor_snap_length = 0.5
 script = ExtResource("1_80whh")
-jump_manager = SubResource("Resource_714km")
 gravity = 50.0
+
+[node name="CharacterJumpManager" type="Node3D" parent="GameViewportContainer/GameViewport/Character" node_paths=PackedStringArray("character_controller")]
+script = ExtResource("2_d001m")
+character_controller = NodePath("..")
+ollie_window_curve = SubResource("Curve_iwct2")
 
 [node name="BoardCollider" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Character"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
@@ -124,41 +104,6 @@ transform = Transform3D(-4.37114e-08, 1, -4.37114e-08, 0, -4.37114e-08, -1, -1, 
 shape = SubResource("CapsuleShape3D_cngjg")
 
 [node name="AnimatedCharacter" parent="GameViewportContainer/GameViewport/Character" instance=ExtResource("4_xihqh")]
-
-[node name="Animator" type="Node3D" parent="GameViewportContainer/GameViewport/Character"]
-visible = false
-
-[node name="CrouchBone" type="Node3D" parent="GameViewportContainer/GameViewport/Character/Animator"]
-
-[node name="BodyMesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character/Animator/CrouchBone"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-mesh = SubResource("BoxMesh_1ye46")
-skeleton = NodePath("../../..")
-
-[node name="Arrow" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character/Animator/CrouchBone"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1, 0)
-visible = false
-mesh = SubResource("PrismMesh_i7kpd")
-skeleton = NodePath("../../..")
-surface_material_override/0 = SubResource("StandardMaterial3D_lww7n")
-
-[node name="Neck" type="Node3D" parent="GameViewportContainer/GameViewport/Character/Animator/CrouchBone"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-
-[node name="HeadBone" type="Node3D" parent="GameViewportContainer/GameViewport/Character/Animator"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-
-[node name="HeadMesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character/Animator/HeadBone"]
-transform = Transform3D(1, 0, 0, 0, -0.173648, -0.984808, 0, 0.984808, -0.173648, 0, 0.5, 0)
-mesh = SubResource("CylinderMesh_vr257")
-skeleton = NodePath("../..")
-
-[node name="BoardBone" type="Node3D" parent="GameViewportContainer/GameViewport/Character/Animator"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
-
-[node name="BoardMesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Character/Animator/BoardBone"]
-mesh = SubResource("BoxMesh_irx74")
-skeleton = NodePath("../../..")
 
 [node name="TrickManager" type="Node3D" parent="GameViewportContainer/GameViewport/Character" node_paths=PackedStringArray("character_body", "trick_animator")]
 script = ExtResource("5_3sunj")
@@ -202,4 +147,4 @@ shape = SubResource("ConcavePolygonShape3D_eo88g")
 [connection signal="landed" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_landed"]
 [connection signal="left_ground" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/AnimatedCharacter" method="_on_character_left_ground"]
 [connection signal="left_ground" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_left_ground"]
-[connection signal="ollied" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_ollied"]
+[connection signal="ollied" from="GameViewportContainer/GameViewport/Character/CharacterJumpManager" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_ollied"]
