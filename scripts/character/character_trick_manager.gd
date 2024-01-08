@@ -20,6 +20,7 @@ var stored_body_tilt: int
 
 var wall_touch_timestamp: float
 var wall_jump_direction: Vector3
+var has_wall_jumped: bool
 
 var initial_y_rotation: float
 var trick_in_progress: bool
@@ -144,6 +145,10 @@ func on_character_left_ground():
 
 func on_character_landed():
     wall_jump_direction = Vector3.ZERO
+    if has_wall_jumped:
+        CharacterController.is_backwards = !CharacterController.is_backwards
+    has_wall_jumped = false
+
     if trick_in_progress:
         crash()
         return
@@ -188,6 +193,7 @@ func execute_wall_jump():
     character_body.velocity += impulse
     trick_animator.start_grab_tilt(0)
 
+    has_wall_jumped = true
     wall_jump_direction = Vector3.ZERO
 
 
