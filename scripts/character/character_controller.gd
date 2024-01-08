@@ -3,6 +3,7 @@ extends CharacterBody3D
 
 signal left_ground
 signal landed
+signal hit_wall(wall_normal: Vector3)
 signal ollied(flick_direction: float)
 
 static var is_grounded: bool
@@ -39,6 +40,7 @@ func _physics_process(delta):
 
     velocity += gravity * Vector3.DOWN * delta
     move_and_slide()
+    process_wall_touching()
 
 
 func process_landings():
@@ -47,6 +49,10 @@ func process_landings():
     elif !is_on_floor() && is_grounded:
         left_ground.emit()
     is_grounded = is_on_floor()
+
+func process_wall_touching():
+    if is_on_wall():
+        hit_wall.emit(get_wall_normal())
 
 
 func process_pushing():

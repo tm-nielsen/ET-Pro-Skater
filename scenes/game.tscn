@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=25 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_jnuqt"]
@@ -58,6 +58,13 @@ point_count = 4
 [sub_resource type="PlaneMesh" id="PlaneMesh_uouax"]
 size = Vector2(2000, 2000)
 
+[sub_resource type="BoxMesh" id="BoxMesh_88pcn"]
+material = ExtResource("6_7o7re")
+size = Vector3(2, 16, 100)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_eo88g"]
+data = PackedVector3Array(-1, 8, 50, 1, 8, 50, -1, -8, 50, 1, 8, 50, 1, -8, 50, -1, -8, 50, 1, 8, -50, -1, 8, -50, 1, -8, -50, -1, 8, -50, -1, -8, -50, 1, -8, -50, 1, 8, 50, 1, 8, -50, 1, -8, 50, 1, 8, -50, 1, -8, -50, 1, -8, 50, -1, 8, -50, -1, 8, 50, -1, -8, -50, -1, 8, 50, -1, -8, 50, -1, -8, -50, 1, 8, 50, -1, 8, 50, 1, 8, -50, -1, 8, 50, -1, 8, -50, 1, 8, -50, -1, -8, 50, 1, -8, 50, -1, -8, -50, 1, -8, 50, 1, -8, -50, -1, -8, -50)
+
 [node name="Game" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -99,7 +106,6 @@ look_offset = Vector3(0.5, 1, 0)
 
 [node name="Character" type="CharacterBody3D" parent="GameViewportContainer/GameViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-floor_max_angle = 1.5708
 floor_snap_length = 0.5
 script = ExtResource("1_80whh")
 jump_manager = SubResource("Resource_714km")
@@ -154,9 +160,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 mesh = SubResource("BoxMesh_irx74")
 skeleton = NodePath("../../..")
 
-[node name="TrickManager" type="Node3D" parent="GameViewportContainer/GameViewport/Character" node_paths=PackedStringArray("rotation_node", "trick_animator")]
+[node name="TrickManager" type="Node3D" parent="GameViewportContainer/GameViewport/Character" node_paths=PackedStringArray("character_body", "trick_animator")]
 script = ExtResource("5_3sunj")
-rotation_node = NodePath("..")
+character_body = NodePath("..")
 trick_animator = NodePath("CharacterTrickAnimator")
 
 [node name="CharacterTrickAnimator" type="Node3D" parent="GameViewportContainer/GameViewport/Character/TrickManager" node_paths=PackedStringArray("board_animator", "rotation_node")]
@@ -179,9 +185,19 @@ mesh = SubResource("PlaneMesh_uouax")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("6_7o7re")
 
-[node name="trapezoid" parent="." instance=ExtResource("5_2pfh7")]
+[node name="trapezoid" parent="GameViewportContainer/GameViewport" instance=ExtResource("5_2pfh7")]
 transform = Transform3D(-2.18557e-07, 0, 5, 0, 5, 0, -5, 0, -2.18557e-07, 0, 0, -50)
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GameViewportContainer/GameViewport"]
+transform = Transform3D(0.802807, 0, -0.596239, 0, 1, 0, 0.596239, 0, 0.802807, -80, 8, 2.5)
+mesh = SubResource("BoxMesh_88pcn")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="GameViewportContainer/GameViewport/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_eo88g")
+
+[connection signal="hit_wall" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_hit_wall"]
 [connection signal="landed" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/AnimatedCharacter" method="_on_character_landed"]
 [connection signal="landed" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_landed"]
 [connection signal="left_ground" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/AnimatedCharacter" method="_on_character_left_ground"]
