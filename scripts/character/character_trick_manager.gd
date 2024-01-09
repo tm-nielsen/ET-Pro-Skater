@@ -227,6 +227,7 @@ func crash():
     character_body.rotation = Vector3.ZERO
     character_body.velocity = Vector3.ZERO
     trick_animator.reset()
+    trick_in_progress = false
     crashed.emit()
 
 

@@ -22,6 +22,8 @@ signal trick_completed
 @export var body_flip_curve: Curve
 var body_flip_initial_rotation: float
 
+var commitment_tween: Tween
+
 
 func start_kickflip(flick_direction: float):
     board_animator.start_kickflip(flick_direction)
@@ -71,9 +73,14 @@ func reset():
     rotation_node.rotation.x = 0
     board_animator.reset()
 
+func kill_all_active_tweens():
+    super()
+    if commitment_tween:
+        commitment_tween.kill()
+
 
 func _tween_commitment(commitment_time: float):
-    var commitment_tween = create_tween()
+    commitment_tween = create_tween()
     commitment_tween.tween_interval(commitment_time)
     commitment_tween.tween_callback(_finish_trick)
 
