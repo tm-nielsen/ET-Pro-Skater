@@ -204,8 +204,12 @@ script = ExtResource("10_tyrew")
 trick_manager = NodePath("../../GameViewportContainer/GameViewport/Character/TrickManager")
 display = NodePath("../ScoreDisplay")
 trick_info_filepath = "res://scripts/score_system/trick_info.json"
+combo_duration = null
+half_spin_score = null
+half_spin_multiplier_increase = null
+grab_tilt_score_frequency = null
 
-[node name="ScoreDisplay" type="Control" parent="Score" node_paths=PackedStringArray("score_label", "multiplier_label", "multiplier_lifetime_bar", "increment_list_parent")]
+[node name="ScoreDisplay" type="Control" parent="Score" node_paths=PackedStringArray("score_label", "score_addition_label", "multiplier_label", "multiplier_lifetime_bar", "increment_list_parent")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -214,6 +218,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("11_7f101")
 score_label = NodePath("TotalScore")
+score_addition_label = NodePath("TotalScore/Addition")
 multiplier_label = NodePath("Multiplier")
 multiplier_lifetime_bar = NodePath("Multiplier/LifetimeBar")
 increment_list_parent = NodePath("IncrementList")
@@ -221,18 +226,32 @@ increment_list_parent = NodePath("IncrementList")
 [node name="TotalScore" type="Label" parent="Score/ScoreDisplay"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.666
+anchor_left = 1.0
 anchor_top = 1.0
-anchor_right = 0.666
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = -6.0
-grow_horizontal = 2
+offset_right = -24.0
+offset_bottom = -12.0
+grow_horizontal = 0
 grow_vertical = 0
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 4
 theme_override_font_sizes/font_size = 64
 text = "42,069"
-horizontal_alignment = 1
+
+[node name="Addition" type="Label" parent="Score/ScoreDisplay/TotalScore"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_right = 12.0
+offset_bottom = 12.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 48
+text = "69420 +"
 
 [node name="Multiplier" type="Label" parent="Score/ScoreDisplay"]
 layout_mode = 1
