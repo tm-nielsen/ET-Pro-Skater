@@ -101,7 +101,7 @@ func _show_score_addition(added_score: int):
         return
 
     var addition_text = _get_seperated_number_string(added_score)
-    score_addition_label.text = addition_text + " +"
+    score_addition_label.text = "+ " + addition_text
     score_addition_label.visible = true
     _hide_score_addition_display_after_delay()
 
