@@ -129,4 +129,5 @@ func read_trick_info_file():
             trick_info_array = json.data
         else:
             push_error('JSON Parse Error: ', json.get_error_message(), ' on line ', json.get_error_line())
-    push_error("Error: trick info file does not exist")
+    else:
+        push_error("Error: trick info file does not exist")
