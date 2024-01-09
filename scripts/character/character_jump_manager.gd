@@ -41,7 +41,7 @@ func _process(_delta):
         if vertical_input_axis != stored_ollie_direction:
             var curved_ollie_strength = ollie_window_curve.sample(1.0 - ollie_potential)
             execute_ollie(curved_ollie_strength)
-            ollied.emit(OllieType.PERFECT if ollie_potential == 1.0 else OllieType.PARTIAL)
+            ollied.emit(OllieType.PERFECT if curved_ollie_strength == 1.0 else OllieType.PARTIAL)
     
     was_crouched_last_frame = InputProxy.is_crouched
 
