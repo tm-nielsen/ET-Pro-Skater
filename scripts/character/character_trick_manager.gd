@@ -1,19 +1,18 @@
 class_name CharacterTrickManager
 extends TweenableNode
 
-enum TrickType { NONE, PARTIAL_OLLIE, PERFECT_OLLIE, TILT_HOP,
+enum TrickType { PARTIAL_OLLIE, PERFECT_OLLIE, TILT_HOP,
         GROUND_KICKFLIP, PARTIAL_OLLIE_KICKFLIP, PERFECT_OLLIE_KICKFLIP, AIR_KICKFLIP,
-        SHUVIT, DOLPHIN_FLIP,
-        FRONT_FLIP, BACK_FLIP }
+        SHUVIT, DOLPHIN_FLIP, FRONT_FLIP, BACK_FLIP, WALL_JUMP,  NONE }
 
 const OllieType = CharacterJumpManager.OllieType
 
 signal trick_completed(trick_type: TrickType)
 signal crashed()
+signal landed_successfully()
 signal half_spins_landed(half_spin_count: int)
 signal grab_tilt_started(tilt_direction: int)
 signal grab_tilt_ended()
-signal wall_jumped()
 
 
 @export_subgroup("references")
@@ -216,6 +215,8 @@ func on_character_landed():
         var half_spin_count = round(spin_delta /PI)
         if half_spin_count != 0:
             half_spins_landed.emit(half_spin_count)
+
+        landed_successfully.emit()
     else:
         crash()
 
@@ -248,7 +249,7 @@ func execute_wall_jump():
     trick_animator.start_grab_tilt(0)
 
     has_wall_jumped = true
-    wall_jumped.emit()
+    trick_completed.emit(TrickType.WALL_JUMP)
     wall_jump_direction = Vector3.ZERO
 
 

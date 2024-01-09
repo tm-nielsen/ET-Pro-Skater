@@ -1,0 +1,64 @@
+[
+    {
+        "name": "Iffy Olly",
+        "score": 2,
+        "multiplier_increase": 0
+    },
+    {
+        "name": "Proper Ollie",
+        "score": 5,
+        "multiplier_increase": 0.5
+    },
+    {
+        "name": "Tilt Hop",
+        "score": 1,
+        "multiplier_increase": 0
+    },
+
+    {
+        "name": "Grundle Flip",
+        "score": 5,
+        "multiplier_increase": 0.5
+    },
+    {
+        "name": "Floppy Kickflip",
+        "score": 4,
+        "multiplier_increase": 0.5
+    },
+    {
+        "name": "Kickflip",
+        "score": 10,
+        "multiplier_increase": 1.0
+    },
+    {
+        "name": "Flip Kick",
+        "score": 6,
+        "multiplier_increase": 1.0
+    },
+
+    {
+        "name": "Shuvit",
+        "score": 8,
+        "multiplier_increase": 1.0
+    },
+    {
+        "name": "Dolphin Flip",
+        "score": 12,
+        "multiplier_increase": 1.5
+    },
+    {
+        "name": "Frontflip",
+        "score": 16,
+        "multiplier_increase": 2.0
+    },
+    {
+        "name": "Backflip",
+        "score": 16,
+        "multiplier_increase": 2.0
+    },
+    {
+        "name": "Wall Jump",
+        "score": 9,
+        "multiplier_increase": 1.5
+    }
+]
