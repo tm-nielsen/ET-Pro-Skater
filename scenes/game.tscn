@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=22 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_jnuqt"]
@@ -9,6 +9,8 @@
 [ext_resource type="Material" uid="uid://bm8e80ox4usv6" path="res://3d assets/materials/grid_material.tres" id="6_7o7re"]
 [ext_resource type="Script" path="res://scripts/character/character_board_animator.gd" id="7_fnltb"]
 [ext_resource type="Script" path="res://scripts/character/character_trick_animator.gd" id="7_o65v5"]
+[ext_resource type="Script" path="res://scripts/score_system/score_counter.gd" id="10_tyrew"]
+[ext_resource type="Script" path="res://scripts/score_system/score_display.gd" id="11_7f101"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
 ambient_light_source = 2
@@ -40,6 +42,16 @@ size = Vector3(2, 16, 100)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_eo88g"]
 data = PackedVector3Array(-1, 8, 50, 1, 8, 50, -1, -8, 50, 1, 8, 50, 1, -8, 50, -1, -8, 50, 1, 8, -50, -1, 8, -50, 1, -8, -50, -1, 8, -50, -1, -8, -50, 1, -8, -50, 1, 8, 50, 1, 8, -50, 1, -8, 50, 1, 8, -50, 1, -8, -50, 1, -8, 50, -1, 8, -50, -1, 8, 50, -1, -8, -50, -1, 8, 50, -1, -8, 50, -1, -8, -50, 1, 8, 50, -1, 8, 50, 1, 8, -50, -1, 8, 50, -1, 8, -50, 1, 8, -50, -1, -8, 50, 1, -8, 50, -1, -8, -50, 1, -8, 50, 1, -8, -50, -1, -8, -50)
+
+[sub_resource type="Theme" id="Theme_crbr7"]
+Label/colors/font_color = Color(0.49, 1, 0.9065, 1)
+Label/colors/font_outline_color = Color(0.185, 0.5, 0.44225, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0.74902)
+Label/constants/outline_size = 12
+Label/constants/shadow_offset_x = -3
+Label/constants/shadow_offset_y = 2
+Label/constants/shadow_outline_size = 12
+Label/font_sizes/font_size = 32
 
 [node name="Game" type="Control"]
 layout_mode = 3
@@ -141,6 +153,84 @@ mesh = SubResource("BoxMesh_88pcn")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/MeshInstance3D/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_eo88g")
+
+[node name="Score" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_crbr7")
+
+[node name="Counter" type="Control" parent="Score" node_paths=PackedStringArray("trick_manager", "display")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("10_tyrew")
+trick_manager = NodePath("../../GameViewportContainer/GameViewport/Character/TrickManager")
+display = NodePath("../ScoreDisplay")
+trick_info_filepath = "res://scripts/score_system/trick_info.json"
+
+[node name="ScoreDisplay" type="Control" parent="Score" node_paths=PackedStringArray("score_label", "multiplier_label", "increment_list_parent")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("11_7f101")
+score_label = NodePath("TotalScore")
+multiplier_label = NodePath("Multiplier")
+increment_list_parent = NodePath("IncrementList")
+
+[node name="TotalScore" type="Label" parent="Score/ScoreDisplay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.666
+anchor_top = 1.0
+anchor_right = 0.666
+anchor_bottom = 1.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 4
+theme_override_font_sizes/font_size = 64
+text = "42,069"
+horizontal_alignment = 1
+
+[node name="Multiplier" type="Label" parent="Score/ScoreDisplay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 48.0
+offset_bottom = -6.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 64
+text = "4.0x"
+
+[node name="IncrementList" type="VBoxContainer" parent="Score/ScoreDisplay"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_bottom = -80.0
+grow_vertical = 0
+
+[node name="Increment" type="Label" parent="Score/ScoreDisplay/IncrementList"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Sickflip +2"
+
+[node name="Label" type="Label" parent="Score/ScoreDisplay/IncrementList"]
+layout_mode = 2
+text = "Kickflip +a billion"
 
 [connection signal="hit_wall" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_hit_wall"]
 [connection signal="landed" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/AnimatedCharacter" method="_on_character_landed"]
