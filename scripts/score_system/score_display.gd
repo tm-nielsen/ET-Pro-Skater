@@ -11,6 +11,11 @@ extends Control
 @export_subgroup("parameters")
 @export var addition_label_display_duration := 0.8
 @export var score_increase_duration := 0.25
+@export var increment_list_display_duration := 1.5
+@export var increment_list_potential_colour := Color(1, 1, 1, 0.5)
+@export var increment_list_banked_colour := Color(1, 1, 1, 1)
+
+var increment_list := []
 
 var previous_score: int
 var score_tween: Tween
@@ -21,6 +26,7 @@ func _ready():
     score_label.text = str(0)
     reset_multiplier_display()
     _hide_score_addition_display()
+    increment_list = increment_list_parent.get_children()
     _clear_increment_list()
 
 
@@ -37,13 +43,34 @@ func update_held_trick_score(score: float):
 func add_potential_score(trick_name: String, score: int):
     var increment_label = Label.new()
     increment_label.text = "+%d %s" %[score, trick_name]
+    increment_label.modulate = increment_list_potential_colour
     increment_list_parent.add_child(increment_label)
+    increment_list.append(increment_label)
+
+func _clear_increment_list_after_delay():
+    for label in increment_list:
+        label.modulate = increment_list_banked_colour
+    var current_increment_list = increment_list.duplicate()
+    var clear_current_list = func():
+        for item in current_increment_list:
+            if item:
+                item.queue_free()
+    increment_list = []
+    
+    var clear_tween = create_tween()
+    clear_tween.tween_interval(increment_list_display_duration)
+    clear_tween.tween_callback(clear_current_list)
+
+func _clear_increment_list():
+    for item in increment_list:
+        item.queue_free()
+    increment_list = []
+
 
 func bank_score(added_score: int, total_score: int):
-    # TODO: clear incrment list after delay
     _show_score_addition(added_score)
     update_score_display(total_score)
-    _clear_increment_list()
+    _clear_increment_list_after_delay()
 
 func update_score_display(score: int):
     if score_tween:
@@ -74,11 +101,6 @@ func _hide_score_addition_display_after_delay():
 
 func _hide_score_addition_display():
     score_addition_label.visible = false
-
-
-func _clear_increment_list():
-    for child in increment_list_parent.get_children():
-        child.queue_free()
 
 
 func update_multiplier_display(multiplier: float):
