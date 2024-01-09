@@ -17,6 +17,9 @@ extends Control
 
 var increment_list := []
 
+var held_trick_increment_label: Label
+var held_trick_name: String
+
 var previous_score: int
 var score_tween: Tween
 var score_addition_tween: Tween
@@ -31,21 +34,31 @@ func _ready():
 
 
 func start_held_trick(trick_name: String):
-    pass
+    if is_instance_valid(held_trick_increment_label):
+        increment_list.erase(held_trick_increment_label)
+        held_trick_increment_label.queue_free()
+    held_trick_increment_label = _create_increment_label(trick_name, 0)
+    held_trick_name = trick_name
 
 func end_held_trick():
-    pass
+    held_trick_increment_label = null
+    held_trick_name = ""
 
 func update_held_trick_score(score: float):
-    pass
+    if is_instance_valid(held_trick_increment_label):
+        held_trick_increment_label.text = "+%.1f %s" %[score, held_trick_name]
 
 
 func add_potential_score(trick_name: String, score: int):
+    _create_increment_label(trick_name, score)
+
+func _create_increment_label(trick_name: String, score: int) -> Label:
     var increment_label = Label.new()
     increment_label.text = "+%d %s" %[score, trick_name]
     increment_label.modulate = increment_list_potential_colour
     increment_list_parent.add_child(increment_label)
     increment_list.append(increment_label)
+    return increment_label
 
 func _clear_increment_list_after_delay():
     for label in increment_list:

@@ -37,6 +37,7 @@ func _ready():
 
 
 func _process(delta):
+    process_held_tricks()
     if multiplier_lifetime > 0:
         multiplier_lifetime -= delta
         display.update_multiplier_lifetime_display(multiplier_lifetime / combo_duration)
@@ -88,7 +89,6 @@ func on_grab_tilt_ended():
         return
     var score = get_held_trick_score()
     potential_score += round(score)
-    display.add_potential_score("Grab Tilt", score)
     trick_held = false
     display.end_held_trick()
 
