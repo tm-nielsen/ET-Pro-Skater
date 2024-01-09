@@ -39,7 +39,7 @@ var has_wall_jumped: bool
 var initial_y_rotation: float
 var spin_delta: float
 
-var current_trick: TrickType
+var current_trick_type: TrickType
 var trick_in_progress: bool
 
 
@@ -175,12 +175,12 @@ func on_character_ollied(ollie_type: OllieType):
 
 
 func on_trick_started(trick_type: TrickType):
-    current_trick = trick_type
+    current_trick_type = trick_type
     trick_in_progress = true
 
 func on_trick_completed():
-    trick_completed.emit(trick_in_progress)
-    current_trick = TrickType.NONE
+    trick_completed.emit(current_trick_type)
+    current_trick_type = TrickType.NONE
     trick_in_progress = false
     if InputProxy.is_crouched:
         process_crouched_direction_changed(InputProxy.direction, false)

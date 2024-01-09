@@ -51,6 +51,8 @@ func process_held_tricks():
 
 
 func on_trick_completed(trick_type: TrickType):
+    if trick_type >= TrickType.NONE:
+        return
     var trick_info = trick_info_array[trick_type]
 
     potential_score += trick_info.score
@@ -61,8 +63,6 @@ func on_trick_completed(trick_type: TrickType):
         score_multiplier += multiplier_increase
         multiplier_lifetime = combo_duration
         display.update_multiplier_display(score_multiplier)
-
-    print(trick_info.name)
 
 
 func on_half_spins_landed(half_spin_count: int):
@@ -98,7 +98,7 @@ func get_held_trick_score() -> float:
 func on_crashed():
     trick_held = false
     score_multiplier = 1
-    display.reset_multiplier_display()
+    display.on_crash()
     display.end_held_trick()
 
 

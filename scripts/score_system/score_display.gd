@@ -1,6 +1,7 @@
 class_name ScoreDisplay
 extends Control
 
+# TODO: implement combo duration bar
 @export_subgroup("references")
 @export var score_label: Label
 @export var multiplier_label: Label
@@ -9,7 +10,7 @@ extends Control
 
 func _ready():
     score_label.text = str(0)
-    multiplier_label.text = "1.0x"
+    reset_multiplier_display()
     _clear_increment_list()
 
 
@@ -45,3 +46,7 @@ func update_multiplier_display(multiplier: float):
 
 func reset_multiplier_display():
     multiplier_label.text = "1.0x"
+
+func on_crash():
+    reset_multiplier_display()
+    _clear_increment_list()
