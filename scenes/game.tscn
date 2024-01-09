@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=24 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_jnuqt"]
@@ -43,15 +43,45 @@ size = Vector3(2, 16, 100)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_eo88g"]
 data = PackedVector3Array(-1, 8, 50, 1, 8, 50, -1, -8, 50, 1, 8, 50, 1, -8, 50, -1, -8, 50, 1, 8, -50, -1, 8, -50, 1, -8, -50, -1, 8, -50, -1, -8, -50, 1, -8, -50, 1, 8, 50, 1, 8, -50, 1, -8, 50, 1, 8, -50, 1, -8, -50, 1, -8, 50, -1, 8, -50, -1, 8, 50, -1, -8, -50, -1, 8, 50, -1, -8, 50, -1, -8, -50, 1, 8, 50, -1, 8, 50, 1, 8, -50, -1, 8, 50, -1, 8, -50, 1, 8, -50, -1, -8, 50, 1, -8, 50, -1, -8, -50, 1, -8, 50, 1, -8, -50, -1, -8, -50)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f5nhr"]
+bg_color = Color(0.184314, 0.498039, 0.443137, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.184314, 0.498039, 0.443137, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+corner_detail = 4
+expand_margin_left = 4.0
+expand_margin_top = 4.0
+expand_margin_right = 4.0
+expand_margin_bottom = 4.0
+shadow_color = Color(0, 0, 0, 0.784314)
+shadow_size = 1
+shadow_offset = Vector2(-1, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0syt7"]
+bg_color = Color(0.490196, 1, 0.905882, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 4
+
 [sub_resource type="Theme" id="Theme_crbr7"]
 Label/colors/font_color = Color(0.49, 1, 0.9065, 1)
 Label/colors/font_outline_color = Color(0.185, 0.5, 0.44225, 1)
-Label/colors/font_shadow_color = Color(0, 0, 0, 0.74902)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0.784314)
 Label/constants/outline_size = 12
 Label/constants/shadow_offset_x = -3
 Label/constants/shadow_offset_y = 2
 Label/constants/shadow_outline_size = 12
 Label/font_sizes/font_size = 32
+ProgressBar/styles/background = SubResource("StyleBoxFlat_f5nhr")
+ProgressBar/styles/fill = SubResource("StyleBoxFlat_0syt7")
 
 [node name="Game" type="Control"]
 layout_mode = 3
@@ -175,7 +205,7 @@ trick_manager = NodePath("../../GameViewportContainer/GameViewport/Character/Tri
 display = NodePath("../ScoreDisplay")
 trick_info_filepath = "res://scripts/score_system/trick_info.json"
 
-[node name="ScoreDisplay" type="Control" parent="Score" node_paths=PackedStringArray("score_label", "multiplier_label", "increment_list_parent")]
+[node name="ScoreDisplay" type="Control" parent="Score" node_paths=PackedStringArray("score_label", "multiplier_label", "multiplier_lifetime_bar", "increment_list_parent")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -185,6 +215,7 @@ grow_vertical = 2
 script = ExtResource("11_7f101")
 score_label = NodePath("TotalScore")
 multiplier_label = NodePath("Multiplier")
+multiplier_lifetime_bar = NodePath("Multiplier/LifetimeBar")
 increment_list_parent = NodePath("IncrementList")
 
 [node name="TotalScore" type="Label" parent="Score/ScoreDisplay"]
@@ -213,6 +244,23 @@ offset_bottom = -6.0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 64
 text = "4.0x"
+
+[node name="LifetimeBar" type="ProgressBar" parent="Score/ScoreDisplay/Multiplier"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 24.0
+offset_top = -8.0
+offset_right = 196.0
+offset_bottom = 18.0
+grow_vertical = 2
+max_value = 1.0
+step = 0.0
+value = 0.74
+show_percentage = false
 
 [node name="IncrementList" type="VBoxContainer" parent="Score/ScoreDisplay"]
 layout_mode = 1

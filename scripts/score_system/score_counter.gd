@@ -39,6 +39,7 @@ func _ready():
 func _process(delta):
     if multiplier_lifetime > 0:
         multiplier_lifetime -= delta
+        display.update_multiplier_lifetime_display(multiplier_lifetime / combo_duration)
         if multiplier_lifetime < 0:
             score_multiplier = 1
             display.reset_multiplier_display()

@@ -1,10 +1,10 @@
 class_name ScoreDisplay
 extends Control
 
-# TODO: implement combo duration bar
 @export_subgroup("references")
 @export var score_label: Label
 @export var multiplier_label: Label
+@export var multiplier_lifetime_bar: ProgressBar
 @export var increment_list_parent: Control
 
 
@@ -42,10 +42,16 @@ func _clear_increment_list():
 
 func update_multiplier_display(multiplier: float):
     # TODO: add animated size bump
+    multiplier_lifetime_bar.visible = true
+    multiplier_lifetime_bar.value = 1
     multiplier_label.text = "%.1fx" % multiplier
+
+func update_multiplier_lifetime_display(normalized_lifetime: float):
+    multiplier_lifetime_bar.value = normalized_lifetime
 
 func reset_multiplier_display():
     multiplier_label.text = "1.0x"
+    multiplier_lifetime_bar.visible = false
 
 func on_crash():
     reset_multiplier_display()
