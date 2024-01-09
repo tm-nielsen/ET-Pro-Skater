@@ -22,7 +22,7 @@ var held_trick_score_frequency: float
 
 var current_score: int
 var potential_score: int
-var score_multiplier: float
+var score_multiplier := 1.0
 var multiplier_lifetime: float
 
 
@@ -46,8 +46,7 @@ func _process(delta):
 
 func process_held_tricks():
     if trick_held:
-        var hold_duration = Time.get_ticks_msec() - held_trick_start_timestamp
-        var held_score = hold_duration / held_trick_score_frequency
+        var held_score = get_held_trick_score()
         display.update_held_trick_score(held_score)
 
 
@@ -84,12 +83,16 @@ func on_grab_tilt_started(_tilt_direction: int):
     display.start_held_trick("Grab Tilt")
 
 func on_grab_tilt_ended():
-    var grab_duration = Time.get_ticks_msec() - held_trick_start_timestamp
-    var score = grab_duration / held_trick_score_frequency
+    var score = get_held_trick_score()
     potential_score += round(score)
     display.add_potential_score("Grab Tilt", score)
     trick_held = false
     display.end_held_trick()
+
+func get_held_trick_score() -> float:
+    var hold_duration = Time.get_ticks_msec() - held_trick_start_timestamp
+    hold_duration /= 1000.0
+    return hold_duration / held_trick_score_frequency
 
 
 func on_crashed():
@@ -101,6 +104,7 @@ func on_crashed():
 
 func on_landed_successfully():
     var score_increase = round(potential_score * score_multiplier)
+    potential_score = 0
     current_score += score_increase
     display.bank_score(score_increase, current_score)
     display.end_held_trick()
