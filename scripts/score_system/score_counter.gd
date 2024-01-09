@@ -83,6 +83,8 @@ func on_grab_tilt_started(_tilt_direction: int):
     display.start_held_trick("Grab Tilt")
 
 func on_grab_tilt_ended():
+    if !trick_held:
+        return
     var score = get_held_trick_score()
     potential_score += round(score)
     display.add_potential_score("Grab Tilt", score)
@@ -103,6 +105,9 @@ func on_crashed():
 
 
 func on_landed_successfully():
+    if trick_held:
+        potential_score += round(get_held_trick_score())
+        trick_held = false
     var score_increase = round(potential_score * score_multiplier)
     potential_score = 0
     current_score += score_increase

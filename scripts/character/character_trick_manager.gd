@@ -65,6 +65,7 @@ func process_grab_tricks(delta):
         start_grab_tilt(InputProxy.vertical_axis)
     if InputProxy.just_uncrouched:
         trick_animator.start_grab_tilt(0)
+        grab_tilt_ended.emit()
         if wall_jump_direction != Vector3.ZERO:
             var wall_jump_input_window_offset = Time.get_ticks_msec() - wall_touch_timestamp
             if wall_jump_input_window_offset < wall_jump_input_window_duration:
