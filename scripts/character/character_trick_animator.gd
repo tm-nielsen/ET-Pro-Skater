@@ -7,7 +7,6 @@ signal trick_completed
 @export var board_animator: CharacterBoardAnimator
 @export var rotation_node: Node3D
 @export var character_animator: CharacterAnimator
-@onready var skeletal_animation_player: AnimationPlayer = character_animator.animation_player
 
 @export_subgroup("commitments")
 @export var kickflip_commitment := 0.45
@@ -25,7 +24,13 @@ signal trick_completed
 @export var body_flip_curve: Curve
 var body_flip_initial_rotation: float
 
+var skeletal_animation_player: AnimationPlayer
 var commitment_tween: Tween
+
+
+func _ready():
+    skeletal_animation_player = character_animator.animation_player
+    skeletal_animation_player.animation_finished.connect(on_animation_finished)
 
 
 func start_kickflip(flick_direction: float):
@@ -78,6 +83,17 @@ func start_christ_air():
 func end_christ_air():
     skeletal_animation_player.play_backwards("Christ Air")
     _tween_commitment(christ_air_commitment)
+
+
+func crash():
+    board_animator.reset()
+    character_animator.board_bone.override_pose = false
+    skeletal_animation_player.play("Crash")
+
+func on_animation_finished(animation_name: String):
+    if animation_name == "Crash":
+        skeletal_animation_player.play("Idle")
+        board_animator.reset()
 
 
 func reset():

@@ -243,10 +243,11 @@ func on_character_landed():
 
 func crash():
     push_warning("Would be a crash, needs to be implemented")
+    if CharacterController.is_backwards:
+        character_body.rotation.y += PI
     CharacterController.is_backwards = false
-    character_body.rotation = Vector3.ZERO
-    character_body.velocity = Vector3.ZERO
-    trick_animator.reset()
+    character_body.velocity *= 0.15
+    trick_animator.crash()
     trick_in_progress = false
     crashed.emit()
 
