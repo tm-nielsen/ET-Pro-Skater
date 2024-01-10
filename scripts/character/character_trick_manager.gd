@@ -94,23 +94,19 @@ func process_push_tricks():
                 trick_animator.end_christ_air()
         return
     
-    if InputProxy.just_pushed && InputProxy.vertical_axis > 0:
+    if InputProxy.just_pushed:
         trick_animator.start_christ_air()
         on_trick_started(TrickType.CHRIST_AIR)
 
 
 func on_input_direction_changed(input_direction: Vector2i):
-    if CharacterController.is_grounded:
+    if CharacterController.is_grounded || trick_in_progress:
         return
 
-    if InputProxy.is_pushing:
-        process_pushing_direction_changed(input_direction)
-
-    if !trick_in_progress:
-        if InputProxy.is_crouched:
-            process_crouched_direction_changed(input_direction)
-        else:
-            process_neutral_direction_changed(input_direction)
+    if InputProxy.is_crouched:
+        process_crouched_direction_changed(input_direction)
+    else:
+        process_neutral_direction_changed(input_direction)
 
 
 func process_crouched_direction_changed(input_direction: Vector2i, ingore_unchanged_axis := true):
@@ -135,19 +131,6 @@ func process_crouched_direction_changed(input_direction: Vector2i, ingore_unchan
             start_grab_tilt(tilt_direction)
     else:
         start_grab_tilt(tilt_direction)
-
-
-func process_pushing_direction_changed(input_direction: Vector2i):
-    if trick_in_progress:
-        if current_trick_type == TrickType.CHRIST_AIR:
-            if input_direction.y <= 0:
-                trick_animator.end_christ_air()
-        return
-
-    if input_direction.y != InputProxy.direction.y:
-        if input_direction.y > 0:
-            trick_animator.start_christ_air()
-            on_trick_started(TrickType.CHRIST_AIR)
 
 
 func process_neutral_direction_changed(input_direction: Vector2i):
