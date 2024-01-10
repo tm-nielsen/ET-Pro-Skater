@@ -78,5 +78,9 @@ func _on_character_landed():
     start_tilt_tween(input_direction.y)
 
 
+func _on_character_pushed():
+    animation_player.play("Push")
+
+
 func _set_body_scale(new_scale: Vector3):
     character_skeleton.set_bone_pose_scale(body_bone_index, new_scale)

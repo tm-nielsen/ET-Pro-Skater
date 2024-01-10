@@ -4,6 +4,7 @@ extends CharacterBody3D
 signal left_ground
 signal landed
 signal hit_wall(wall_normal: Vector3)
+signal pushed
 
 static var is_grounded: bool
 static var is_backwards: bool
@@ -59,6 +60,7 @@ func process_pushing():
         var push_tween = create_tween()
         push_tween.tween_interval(push_delay)
         push_tween.tween_callback(_enable_pushing)
+        pushed.emit()
 
 func _enable_pushing():
     can_push = true

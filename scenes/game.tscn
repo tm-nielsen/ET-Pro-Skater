@@ -301,4 +301,5 @@ text = "Kickflip +a billion"
 [connection signal="landed" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_landed"]
 [connection signal="left_ground" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/AnimatedCharacter" method="_on_character_left_ground"]
 [connection signal="left_ground" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_left_ground"]
+[connection signal="pushed" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/AnimatedCharacter" method="_on_character_pushed"]
 [connection signal="ollied" from="GameViewportContainer/GameViewport/Character/CharacterJumpManager" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_ollied"]
