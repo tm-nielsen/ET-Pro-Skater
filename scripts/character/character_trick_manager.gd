@@ -224,15 +224,13 @@ func on_character_landed():
         crash()
         return
 
-    var y_rotation = get_small_angle(character_body.rotation.y)
-    var rotation_delta = y_rotation - initial_y_rotation
-    var snapped_rotation_delta = snappedf(rotation_delta, PI)
-    var snapped_rotation = get_small_angle(initial_y_rotation + snapped_rotation_delta)
+    var snapped_spin_delta = snappedf(spin_delta, PI)
+    var snapped_rotation = get_small_angle(initial_y_rotation + snapped_spin_delta)
 
-    if abs(y_rotation - snapped_rotation) < landing_safe_margin:
+    if abs(spin_delta - snapped_spin_delta) < landing_safe_margin:
         trick_animator.reset()
         character_body.rotation.y = snapped_rotation
-        if int(snapped_rotation_delta / PI) % 2:
+        if int(snapped_spin_delta / PI) % 2:
             CharacterController.is_backwards = !CharacterController.is_backwards
         
         var half_spin_count = round(spin_delta /PI)
