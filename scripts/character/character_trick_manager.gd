@@ -3,7 +3,8 @@ extends TweenableNode
 
 enum TrickType { PARTIAL_OLLIE, PERFECT_OLLIE, TILT_HOP,
         GROUND_KICKFLIP, PARTIAL_OLLIE_KICKFLIP, PERFECT_OLLIE_KICKFLIP, AIR_KICKFLIP,
-        SHUVIT, DOLPHIN_FLIP, FRONT_FLIP, BACK_FLIP, WALL_JUMP,  NONE }
+        SHUVIT, DOLPHIN_FLIP, FRONT_FLIP, BACK_FLIP, WALL_JUMP,
+        CHRIST_AIR, MIRACLE_WHIP, ROUNDABOUT, COFFIN, NONE }
 
 const OllieType = CharacterJumpManager.OllieType
 
@@ -48,14 +49,16 @@ func _ready():
     InputProxy.direction_changed.connect(on_input_direction_changed)
 
 func _physics_process(delta):
-    if CharacterController.is_grounded || trick_in_progress:
+    if CharacterController.is_grounded :
         return
-
     process_grab_tricks(delta)
     process_push_tricks()
 
 
 func process_grab_tricks(delta):
+    if trick_in_progress:
+        return
+
     if InputProxy.is_crouched:
         var horizontal_input = InputProxy.horizontal_axis
         spin_delta -= rotation_speed * horizontal_input * delta
@@ -85,19 +88,29 @@ func start_body_flip_input_window(tilt_direction: int):
 
 
 func process_push_tricks():
-    pass
+    if trick_in_progress:
+        if current_trick_type == TrickType.CHRIST_AIR:
+            if InputProxy.just_released_push:
+                trick_animator.end_christ_air()
+        return
+    
+    if InputProxy.just_pushed && InputProxy.vertical_axis > 0:
+        trick_animator.start_christ_air()
+        on_trick_started(TrickType.CHRIST_AIR)
 
 
 func on_input_direction_changed(input_direction: Vector2i):
-    if CharacterController.is_grounded || trick_in_progress:
+    if CharacterController.is_grounded:
         return
 
-    if InputProxy.is_crouched:
-        process_crouched_direction_changed(input_direction)
-    elif InputProxy.is_pushing:
-        pass
-    else:
-        process_neutral_direction_changed(input_direction)
+    if InputProxy.is_pushing:
+        process_pushing_direction_changed(input_direction)
+
+    if !trick_in_progress:
+        if InputProxy.is_crouched:
+            process_crouched_direction_changed(input_direction)
+        else:
+            process_neutral_direction_changed(input_direction)
 
 
 func process_crouched_direction_changed(input_direction: Vector2i, ingore_unchanged_axis := true):
@@ -122,6 +135,19 @@ func process_crouched_direction_changed(input_direction: Vector2i, ingore_unchan
             start_grab_tilt(tilt_direction)
     else:
         start_grab_tilt(tilt_direction)
+
+
+func process_pushing_direction_changed(input_direction: Vector2i):
+    if trick_in_progress:
+        if current_trick_type == TrickType.CHRIST_AIR:
+            if input_direction.y <= 0:
+                trick_animator.end_christ_air()
+        return
+
+    if input_direction.y != InputProxy.direction.y:
+        if input_direction.y > 0:
+            trick_animator.start_christ_air()
+            on_trick_started(TrickType.CHRIST_AIR)
 
 
 func process_neutral_direction_changed(input_direction: Vector2i):

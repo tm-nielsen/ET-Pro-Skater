@@ -6,12 +6,15 @@ signal trick_completed
 @export_subgroup("references")
 @export var board_animator: CharacterBoardAnimator
 @export var rotation_node: Node3D
+@export var character_animator: CharacterAnimator
+@onready var skeletal_animation_player: AnimationPlayer = character_animator.animation_player
 
 @export_subgroup("commitments")
 @export var kickflip_commitment := 0.45
 @export var shuvit_commitment := 0.6
 @export var dolphin_flip_commitment := 0.7
 @export var body_flip_commitment := 0.8
+@export var christ_air_commitment := 0.2
 
 @export_subgroup("grab tilt", "grab_tilt")
 @export var grab_tilt_angle := 1.0
@@ -66,6 +69,15 @@ func start_body_flip(flip_direction: float):
 func _set_body_flip_rotation(t: float):
     var curved_t = body_flip_curve.sample(t)
     rotation_node.rotation.x = lerpf(body_flip_initial_rotation, 0, curved_t)
+
+
+func start_christ_air():
+    character_animator.board_bone.override_pose = false
+    skeletal_animation_player.play("Christ Air")
+
+func end_christ_air():
+    skeletal_animation_player.play_backwards("Christ Air")
+    _tween_commitment(christ_air_commitment)
 
 
 func reset():

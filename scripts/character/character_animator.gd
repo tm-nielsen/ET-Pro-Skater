@@ -3,9 +3,10 @@ extends TweenableNode
 
 @export_group("References")
 @export var character_skeleton: Skeleton3D
+@export var animation_player: AnimationPlayer
 @export var body_bone_name := "Back"
 @onready var body_bone_index := character_skeleton.find_bone(body_bone_name)
-@export var board_bone: Node3D
+@export var board_bone: BoneAttachment3D
 
 @export_group("Parameters")
 @export_subgroup("crouch", "crouch")

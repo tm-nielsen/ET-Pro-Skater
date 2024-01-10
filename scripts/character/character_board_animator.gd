@@ -40,7 +40,7 @@ func start_dolphin_flip(flick_direction: float):
 
 func _start_board_flip(flick_direction: float, rotation_axis: Vector3, axis_string: String,
             duration: float,offset: Vector3, offset_duration: float):
-    kill_all_active_tweens()
+    reset()
     var initial_rotation = -flick_direction * TAU
 
     offset.x *= CharacterController.is_forward_sign
@@ -56,13 +56,20 @@ func _start_board_flip(flick_direction: float, rotation_axis: Vector3, axis_stri
 
 
 func prep_shuvit():
+    reset_board()
     tween_property("position", shuvit_prep_offset, shuvit_prep_duration, board_bone)
 
 func unprep_shuvit():
+    reset_board()
     tween_property("position", Vector3.ZERO, shuvit_prep_duration, board_bone)
 
 
 func reset():
     kill_all_active_tweens()
+    reset_board()
+
+
+func reset_board():
+    board_bone.override_pose = true
     board_bone.position = Vector3.ZERO
     board_bone.rotation = Vector3.ZERO

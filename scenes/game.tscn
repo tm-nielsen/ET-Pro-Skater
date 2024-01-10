@@ -152,10 +152,11 @@ script = ExtResource("5_3sunj")
 character_body = NodePath("..")
 trick_animator = NodePath("CharacterTrickAnimator")
 
-[node name="CharacterTrickAnimator" type="Node3D" parent="GameViewportContainer/GameViewport/Character/TrickManager" node_paths=PackedStringArray("board_animator", "rotation_node")]
+[node name="CharacterTrickAnimator" type="Node3D" parent="GameViewportContainer/GameViewport/Character/TrickManager" node_paths=PackedStringArray("board_animator", "rotation_node", "character_animator")]
 script = ExtResource("7_o65v5")
 board_animator = NodePath("CharacterBoardAnimator")
 rotation_node = NodePath("../..")
+character_animator = NodePath("../../AnimatedCharacter")
 body_flip_curve = SubResource("Curve_h0tlr")
 
 [node name="CharacterBoardAnimator" type="Node3D" parent="GameViewportContainer/GameViewport/Character/TrickManager/CharacterTrickAnimator" node_paths=PackedStringArray("character_animator")]
@@ -204,10 +205,6 @@ script = ExtResource("10_tyrew")
 trick_manager = NodePath("../../GameViewportContainer/GameViewport/Character/TrickManager")
 display = NodePath("../ScoreDisplay")
 trick_info_filepath = "res://scripts/score_system/trick_info.json"
-combo_duration = null
-half_spin_score = null
-half_spin_multiplier_increase = null
-grab_tilt_score_frequency = null
 
 [node name="ScoreDisplay" type="Control" parent="Score" node_paths=PackedStringArray("score_label", "score_addition_label", "multiplier_label", "multiplier_lifetime_bar", "increment_list_parent")]
 layout_mode = 1

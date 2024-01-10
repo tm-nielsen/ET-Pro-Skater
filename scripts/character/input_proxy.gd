@@ -11,6 +11,7 @@ var just_uncrouched: bool
 
 var is_pushing: bool
 var just_pushed: bool
+var just_released_push: bool
 
 var direction: Vector2i
 var horizontal_axis: int
@@ -34,11 +35,13 @@ func process_buttons():
         is_crouched = false
 
     just_pushed = false
+    just_released_push = false
     if Input.is_action_just_pressed("push"):
         push_pressed.emit()
         just_pushed = true
         is_pushing = true
     elif Input.is_action_just_released("push"):
+        just_released_push = true
         is_pushing = false
 
 
