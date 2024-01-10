@@ -86,6 +86,7 @@ func end_christ_air():
 
 
 func crash():
+    kill_all_active_tweens()
     board_animator.reset()
     character_animator.board_bone.override_pose = false
     skeletal_animation_player.play("Crash")

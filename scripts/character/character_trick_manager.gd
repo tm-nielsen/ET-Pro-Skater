@@ -242,7 +242,6 @@ func on_character_landed():
         crash()
 
 func crash():
-    push_warning("Would be a crash, needs to be implemented")
     if CharacterController.is_backwards:
         character_body.rotation.y += PI
     CharacterController.is_backwards = false
