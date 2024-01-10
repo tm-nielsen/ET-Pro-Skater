@@ -6,7 +6,7 @@ signal landed
 signal hit_wall(wall_normal: Vector3)
 signal pushed
 
-static var is_grounded: bool
+static var is_grounded: bool = true
 static var is_backwards: bool
 static var is_forward_sign: get = _get_forward_sign
 static var forward: Vector3
@@ -21,6 +21,10 @@ static var forward: Vector3
 
 var can_push := true
 
+
+func _ready():
+    velocity += Vector3.DOWN
+    move_and_slide()
 
 func _physics_process(delta):
     process_landings()

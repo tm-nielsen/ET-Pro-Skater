@@ -1,5 +1,7 @@
 [gd_scene load_steps=24 format=3 uid="uid://dgce8uj4j5jur"]
 
+[ext_resource type="Theme" uid="uid://b8qfxv23aehvm" path="res://ui/ui_theme.tres" id="1_5eeqv"]
+[ext_resource type="Script" path="res://scripts/game_loop/game_manager.gd" id="1_8law2"]
 [ext_resource type="Script" path="res://scripts/character/character_controller.gd" id="1_80whh"]
 [ext_resource type="Script" path="res://scripts/camera_controller.gd" id="1_jnuqt"]
 [ext_resource type="Script" path="res://scripts/character/character_jump_manager.gd" id="2_d001m"]
@@ -11,6 +13,7 @@
 [ext_resource type="Script" path="res://scripts/character/character_trick_animator.gd" id="7_o65v5"]
 [ext_resource type="Script" path="res://scripts/score_system/score_counter.gd" id="10_tyrew"]
 [ext_resource type="Script" path="res://scripts/score_system/score_display.gd" id="11_7f101"]
+[ext_resource type="Script" path="res://scripts/game_loop/results_display.gd" id="14_xjeju"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
 ambient_light_source = 2
@@ -43,46 +46,6 @@ size = Vector3(2, 16, 100)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_eo88g"]
 data = PackedVector3Array(-1, 8, 50, 1, 8, 50, -1, -8, 50, 1, 8, 50, 1, -8, 50, -1, -8, 50, 1, 8, -50, -1, 8, -50, 1, -8, -50, -1, 8, -50, -1, -8, -50, 1, -8, -50, 1, 8, 50, 1, 8, -50, 1, -8, 50, 1, 8, -50, 1, -8, -50, 1, -8, 50, -1, 8, -50, -1, 8, 50, -1, -8, -50, -1, 8, 50, -1, -8, 50, -1, -8, -50, 1, 8, 50, -1, 8, 50, 1, 8, -50, -1, 8, 50, -1, 8, -50, 1, 8, -50, -1, -8, 50, 1, -8, 50, -1, -8, -50, 1, -8, 50, 1, -8, -50, -1, -8, -50)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f5nhr"]
-bg_color = Color(0.184314, 0.498039, 0.443137, 1)
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.184314, 0.498039, 0.443137, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-corner_detail = 4
-expand_margin_left = 4.0
-expand_margin_top = 4.0
-expand_margin_right = 4.0
-expand_margin_bottom = 4.0
-shadow_color = Color(0, 0, 0, 0.784314)
-shadow_size = 1
-shadow_offset = Vector2(-1, 2)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0syt7"]
-bg_color = Color(0.490196, 1, 0.905882, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-corner_detail = 4
-
-[sub_resource type="Theme" id="Theme_crbr7"]
-Label/colors/font_color = Color(0.49, 1, 0.9065, 1)
-Label/colors/font_outline_color = Color(0.185, 0.5, 0.44225, 1)
-Label/colors/font_shadow_color = Color(0, 0, 0, 0.784314)
-Label/constants/outline_size = 12
-Label/constants/shadow_offset_x = -3
-Label/constants/shadow_offset_y = 2
-Label/constants/shadow_outline_size = 12
-Label/font_sizes/font_size = 32
-ProgressBar/styles/background = SubResource("StyleBoxFlat_f5nhr")
-ProgressBar/styles/fill = SubResource("StyleBoxFlat_0syt7")
-
 [node name="Game" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -90,6 +53,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_5eeqv")
 
 [node name="GameViewportContainer" type="SubViewportContainer" parent="."]
 texture_filter = 1
@@ -123,7 +87,7 @@ position_offset = Vector3(1, 1.5, 2)
 look_offset = Vector3(0.5, 1, 0)
 
 [node name="Character" type="CharacterBody3D" parent="GameViewportContainer/GameViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
 floor_snap_length = 0.5
 script = ExtResource("1_80whh")
 gravity = 50.0
@@ -185,16 +149,38 @@ mesh = SubResource("BoxMesh_88pcn")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/MeshInstance3D/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_eo88g")
 
-[node name="Score" type="Control" parent="."]
+[node name="GameManager" type="Control" parent="." node_paths=PackedStringArray("timer_label", "starting_screen", "results_screen", "hud_root")]
+process_mode = 3
+anchors_preset = 0
+script = ExtResource("1_8law2")
+game_duration = 20.0
+timer_label = NodePath("../HUD/GameTimer")
+starting_screen = NodePath("../StartScreen")
+results_screen = NodePath("../ResultsScreen")
+hud_root = NodePath("../HUD")
+
+[node name="HUD" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = SubResource("Theme_crbr7")
 
-[node name="Counter" type="Control" parent="Score" node_paths=PackedStringArray("trick_manager", "display")]
+[node name="GameTimer" type="Label" parent="HUD"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_top = 6.0
+offset_right = -12.0
+grow_horizontal = 0
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = -2
+theme_override_font_sizes/font_size = 64
+text = "2:04:00"
+
+[node name="ScoreCounter" type="Control" parent="HUD" node_paths=PackedStringArray("trick_manager", "display")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -206,7 +192,7 @@ trick_manager = NodePath("../../GameViewportContainer/GameViewport/Character/Tri
 display = NodePath("../ScoreDisplay")
 trick_info_filepath = "res://scripts/score_system/trick_info.json"
 
-[node name="ScoreDisplay" type="Control" parent="Score" node_paths=PackedStringArray("score_label", "score_addition_label", "multiplier_label", "multiplier_lifetime_bar", "increment_list_parent")]
+[node name="ScoreDisplay" type="Control" parent="HUD" node_paths=PackedStringArray("score_label", "score_addition_label", "multiplier_label", "multiplier_lifetime_bar", "increment_list_parent")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -220,7 +206,7 @@ multiplier_label = NodePath("Multiplier")
 multiplier_lifetime_bar = NodePath("Multiplier/LifetimeBar")
 increment_list_parent = NodePath("IncrementList")
 
-[node name="TotalScore" type="Label" parent="Score/ScoreDisplay"]
+[node name="TotalScore" type="Label" parent="HUD/ScoreDisplay"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -236,7 +222,7 @@ theme_override_constants/shadow_offset_y = 4
 theme_override_font_sizes/font_size = 64
 text = "42,069"
 
-[node name="Addition" type="Label" parent="Score/ScoreDisplay/TotalScore"]
+[node name="Addition" type="Label" parent="HUD/ScoreDisplay/TotalScore"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -250,7 +236,7 @@ theme_override_constants/shadow_offset_y = 2
 theme_override_font_sizes/font_size = 48
 text = "+ 69420"
 
-[node name="Multiplier" type="Label" parent="Score/ScoreDisplay"]
+[node name="Multiplier" type="Label" parent="HUD/ScoreDisplay"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
@@ -261,7 +247,7 @@ grow_vertical = 0
 theme_override_font_sizes/font_size = 64
 text = "4.0x"
 
-[node name="LifetimeBar" type="ProgressBar" parent="Score/ScoreDisplay/Multiplier"]
+[node name="LifetimeBar" type="ProgressBar" parent="HUD/ScoreDisplay/Multiplier"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
@@ -278,7 +264,7 @@ step = 0.0
 value = 0.74
 show_percentage = false
 
-[node name="IncrementList" type="VBoxContainer" parent="Score/ScoreDisplay"]
+[node name="IncrementList" type="VBoxContainer" parent="HUD/ScoreDisplay"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 1.0
@@ -287,14 +273,69 @@ offset_left = 24.0
 offset_bottom = -80.0
 grow_vertical = 0
 
-[node name="Increment" type="Label" parent="Score/ScoreDisplay/IncrementList"]
+[node name="Increment" type="Label" parent="HUD/ScoreDisplay/IncrementList"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 32
 text = "Sickflip +2"
 
-[node name="Label" type="Label" parent="Score/ScoreDisplay/IncrementList"]
+[node name="Label" type="Label" parent="HUD/ScoreDisplay/IncrementList"]
 layout_mode = 2
 text = "Kickflip +a billion"
+
+[node name="StartScreen" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.588235)
+
+[node name="Label" type="Label" parent="StartScreen"]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -22.5
+offset_bottom = 22.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 6
+theme_override_font_sizes/font_size = 72
+text = "Press a Thing
+to make it Go"
+horizontal_alignment = 1
+
+[node name="ResultsScreen" type="Control" parent="." node_paths=PackedStringArray("score_label", "score_counter")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("14_xjeju")
+score_label = NodePath("Label")
+score_counter = NodePath("../HUD/ScoreCounter")
+
+[node name="Background" type="ColorRect" parent="ResultsScreen"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.588235)
+
+[node name="Label" type="Label" parent="ResultsScreen"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 64
+text = "Final Score: 69,420"
 
 [connection signal="hit_wall" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_hit_wall"]
 [connection signal="landed" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/AnimatedCharacter" method="_on_character_landed"]

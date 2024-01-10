@@ -134,7 +134,10 @@ func on_crash():
     _clear_increment_list()
 
 
-func _get_seperated_number_string(number: float):
+func _get_seperated_number_string(number: float) -> String:
+    return ScoreDisplay.get_seperated_number_string(number)
+
+static func get_seperated_number_string(number: float) -> String:
     var text = str(int(number))
     var i = 3
     while text.length() > i:
