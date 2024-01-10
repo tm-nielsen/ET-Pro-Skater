@@ -14,6 +14,7 @@ signal landed_successfully()
 signal half_spins_landed(half_spin_count: int)
 signal grab_tilt_started(tilt_direction: int)
 signal grab_tilt_ended()
+signal christ_air_started()
 
 
 @export_subgroup("references")
@@ -30,12 +31,17 @@ signal grab_tilt_ended()
 @export var wall_jump_force := Vector2(12, 22)
 @export var wall_jump_input_window_duration := 200
 
+@export_subgroup("christ air", "christ_air")
+@export var christ_air_startup_time := 0.35
+
 var body_tilt_timestamp: float
 var stored_body_tilt: int
 
 var wall_touch_timestamp: float
 var wall_jump_direction: Vector3
 var has_wall_jumped: bool
+
+var christ_air_startup_tween: Tween
 
 var initial_y_rotation: float
 var spin_delta: float
@@ -91,12 +97,19 @@ func process_push_tricks():
     if trick_in_progress:
         if current_trick_type == TrickType.CHRIST_AIR:
             if InputProxy.just_released_push:
+                if christ_air_startup_tween:
+                    christ_air_startup_tween.kill()
                 trick_animator.end_christ_air()
         return
     
     if InputProxy.just_pushed:
         trick_animator.start_christ_air()
         on_trick_started(TrickType.CHRIST_AIR)
+        if christ_air_startup_tween:
+            christ_air_startup_tween.kill()
+        christ_air_startup_tween = create_tween()
+        christ_air_startup_tween.tween_interval(christ_air_startup_time)
+        christ_air_startup_tween.tween_callback(func(): christ_air_started.emit())
 
 
 func on_input_direction_changed(input_direction: Vector2i):

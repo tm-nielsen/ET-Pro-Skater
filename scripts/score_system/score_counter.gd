@@ -12,7 +12,8 @@ const TrickType = CharacterTrickManager.TrickType
 @export var combo_duration := 5.0
 @export var half_spin_score := 3
 @export var half_spin_multiplier_increase := 0.5
-@export var grab_tilt_score_frequency := 0.5
+@export var grab_tilt_score_frequency := 2.0
+@export var christ_air_score_frequency := 16.0
 
 var trick_info_array
 
@@ -34,6 +35,7 @@ func _ready():
     trick_manager.half_spins_landed.connect(on_half_spins_landed)
     trick_manager.grab_tilt_started.connect(on_grab_tilt_started)
     trick_manager.grab_tilt_ended.connect(on_grab_tilt_ended)
+    trick_manager.christ_air_started.connect(on_christ_air_started)
 
 
 func _process(delta):
@@ -53,7 +55,10 @@ func process_held_tricks():
 
 
 func on_trick_completed(trick_type: TrickType):
-    if trick_type >= TrickType.NONE:
+    if trick_type == TrickType.CHRIST_AIR:
+        on_christ_air_ended()
+        return
+    if trick_type >= trick_info_array.size():
         return
     var trick_info = trick_info_array[trick_type]
 
@@ -92,10 +97,22 @@ func on_grab_tilt_ended():
     trick_held = false
     display.end_held_trick()
 
+func on_christ_air_started():
+    held_trick_start_timestamp = Time.get_ticks_msec()
+    held_trick_score_frequency = christ_air_score_frequency
+    trick_held = true
+    display.start_held_trick("Christ Air")
+
+func on_christ_air_ended():
+    potential_score += round(get_held_trick_score())
+    trick_held = false
+    display.end_held_trick()
+    
+
 func get_held_trick_score() -> float:
     var hold_duration = Time.get_ticks_msec() - held_trick_start_timestamp
     hold_duration /= 1000.0
-    return hold_duration / held_trick_score_frequency
+    return hold_duration * held_trick_score_frequency
 
 
 func on_crashed():
