@@ -34,6 +34,8 @@ func _ready():
     InputProxy.crouch_released.connect(on_crouch_released)
     InputProxy.direction_changed.connect(on_input_direction_changed)
 
+func _process(_delta):
+    character_skeleton.scale.x = CharacterController.is_forward_sign
 
 func on_crouch_pressed():
     tween_property("body_scale", crouch_scale, crouch_tween_duration)
