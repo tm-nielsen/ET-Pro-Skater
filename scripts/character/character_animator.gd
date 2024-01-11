@@ -78,9 +78,14 @@ func _on_character_left_ground():
 func _on_character_landed():
     var input_direction = InputProxy.direction
     animation_player.play(get_aligned_animation_name("Idle"))
+    animation_player.advance(1)
     input_direction *= CharacterController.is_forward_sign
     start_turn_tween(input_direction.x)
     start_tilt_tween(input_direction.y)
+
+    if InputProxy.is_crouched:
+        body_scale = crouch_scale
+
 
 func reset():
     kill_all_active_tweens()
@@ -88,8 +93,20 @@ func reset():
     rotation = Vector3.ZERO
 
 
+func uncrash():
+    animation_player.play("Idle")
+    animation_player.advance(1)
+    if InputProxy.is_crouched:
+        body_scale = crouch_scale
+
+
 func _on_character_pushed():
     animation_player.play(get_aligned_animation_name("Push"))
+    animation_player.animation_finished.connect(_on_push_animation_finished, CONNECT_ONE_SHOT)
+
+func _on_push_animation_finished(_animation_name):
+    if InputProxy.is_crouched:
+        body_scale = crouch_scale
 
 
 func get_aligned_animation_name(base_name: String) -> String:

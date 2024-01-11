@@ -93,7 +93,7 @@ func crash():
 
 
 func uncrash():
-    skeletal_animation_player.play("Idle")
+    character_animator.uncrash()
     board_animator.reset()
 
 
