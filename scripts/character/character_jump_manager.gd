@@ -3,6 +3,7 @@ extends Node3D
 
 enum OllieType { PARTIAL, PERFECT, TILT_HOP }
 
+signal jumped
 signal ollied(type: OllieType)
 
 
@@ -35,6 +36,7 @@ func _process(_delta):
             store_ollie_potential()
         if InputProxy.just_uncrouched:
             character_controller.velocity += jump_force * Vector3.UP
+            jumped.emit()
         if InputProxy.just_crouched:
             end_ollie_window()
             

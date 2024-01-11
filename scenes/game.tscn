@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=40 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Theme" uid="uid://b8qfxv23aehvm" path="res://ui/ui_theme.tres" id="1_5eeqv"]
 [ext_resource type="Script" path="res://scripts/game_loop/game_manager.gd" id="1_8law2"]
@@ -11,10 +11,25 @@
 [ext_resource type="Material" uid="uid://bm8e80ox4usv6" path="res://3d assets/materials/grid_material.tres" id="6_7o7re"]
 [ext_resource type="Script" path="res://scripts/character/character_board_animator.gd" id="7_fnltb"]
 [ext_resource type="Script" path="res://scripts/character/character_trick_animator.gd" id="7_o65v5"]
+[ext_resource type="Script" path="res://scripts/character/character_sfx_player.gd" id="9_bksik"]
+[ext_resource type="AudioStream" uid="uid://cyn6p2x2pcelw" path="res://audio/sfx/XFXJumpOnly.ogg" id="10_fymj4"]
 [ext_resource type="Script" path="res://scripts/score_system/score_counter.gd" id="10_tyrew"]
 [ext_resource type="Script" path="res://scripts/score_system/score_display.gd" id="11_7f101"]
+[ext_resource type="AudioStream" uid="uid://dpgv7mwsqycok" path="res://audio/sfx/XFXOllieOnly.ogg" id="11_tncn4"]
+[ext_resource type="AudioStream" uid="uid://div7ku042wgl3" path="res://audio/sfx/XFXPush.ogg" id="12_446pn"]
+[ext_resource type="AudioStream" uid="uid://bty1r2qws8kr8" path="res://audio/sfx/XFXCrash.ogg" id="13_whtyh"]
+[ext_resource type="AudioStream" uid="uid://duql6ip5v5f12" path="res://audio/sfx/XFXLandingNormal.ogg" id="14_fkeoi"]
 [ext_resource type="Script" path="res://scripts/game_loop/results_display.gd" id="14_xjeju"]
+[ext_resource type="AudioStream" uid="uid://ct1ekcnsqh1ks" path="res://audio/sfx/XFXLandingFancy.ogg" id="15_ajc0o"]
 [ext_resource type="PackedScene" uid="uid://bmdx3qvem44i5" path="res://scenes/prefabs/high_score_entry.tscn" id="15_ujck0"]
+[ext_resource type="AudioStream" uid="uid://bs1icfxf0ymlg" path="res://audio/sfx/XFXChristAir.ogg" id="16_jvvuu"]
+[ext_resource type="AudioStream" uid="uid://b0y0fucqx2mys" path="res://audio/sfx/XFXRollingLoop.ogg" id="17_glege"]
+[ext_resource type="AudioStream" uid="uid://c50bnsaxaqb0r" path="res://audio/sfx/XFXTrick-001.ogg" id="18_1x56u"]
+[ext_resource type="AudioStream" uid="uid://cq17fkqo4y5di" path="res://audio/sfx/XFXTrick-002.ogg" id="19_rn211"]
+[ext_resource type="AudioStream" uid="uid://cvlm8vmccgkf4" path="res://audio/sfx/XFXTrick-003.ogg" id="20_aguc4"]
+[ext_resource type="AudioStream" uid="uid://ccmqc1gj8mwj4" path="res://audio/sfx/XFXTrick-004.ogg" id="21_w8jt0"]
+[ext_resource type="AudioStream" uid="uid://b02ekd0feedmh" path="res://audio/sfx/XFXTrick-005.ogg" id="22_5v66l"]
+[ext_resource type="AudioStream" uid="uid://7f7e6rl6wo6g" path="res://audio/music/XMXETSkateTitleScreen.ogg" id="26_8dhet"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
 ambient_light_source = 2
@@ -69,6 +84,7 @@ stretch_shrink = 4
 
 [node name="GameViewport" type="SubViewport" parent="GameViewportContainer"]
 handle_input_locally = false
+audio_listener_enable_3d = true
 size = Vector2i(200, 150)
 render_target_update_mode = 4
 
@@ -128,6 +144,76 @@ body_flip_curve = SubResource("Curve_h0tlr")
 script = ExtResource("7_fnltb")
 character_animator = NodePath("../../../AnimatedCharacter")
 
+[node name="SFXPlayer" type="Node3D" parent="GameViewportContainer/GameViewport/Character" node_paths=PackedStringArray("character_controller", "jump_manager", "trick_manager", "audio_source_jump", "audio_source_ollie", "audio_source_push", "audio_source_crash", "audio_source_landing", "audio_source_landed_after_trick", "audio_source_tricks", "audio_source_christ_air", "audio_source_skateboard_loop")]
+script = ExtResource("9_bksik")
+character_controller = NodePath("..")
+jump_manager = NodePath("../CharacterJumpManager")
+trick_manager = NodePath("../TrickManager")
+audio_source_jump = NodePath("JumpSound")
+audio_source_ollie = NodePath("OllieSound")
+audio_source_push = NodePath("PushSound")
+audio_source_crash = NodePath("CrashSound")
+audio_source_landing = NodePath("LandedSound")
+audio_source_landed_after_trick = NodePath("TrickLandedSound")
+audio_source_tricks = [NodePath("Tricks/TrickSound1"), NodePath("Tricks/TrickSound2"), NodePath("Tricks/TrickSound3"), NodePath("Tricks/TrickSound4"), NodePath("Tricks/TrickSound5")]
+audio_source_christ_air = NodePath("ChristAirSound")
+audio_source_skateboard_loop = NodePath("RollingSound")
+
+[node name="JumpSound" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer"]
+stream = ExtResource("10_fymj4")
+bus = &"Sfx"
+
+[node name="OllieSound" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer"]
+stream = ExtResource("11_tncn4")
+bus = &"Sfx"
+
+[node name="PushSound" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer"]
+stream = ExtResource("12_446pn")
+bus = &"Sfx"
+
+[node name="CrashSound" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer"]
+stream = ExtResource("13_whtyh")
+bus = &"Sfx"
+
+[node name="LandedSound" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer"]
+stream = ExtResource("14_fkeoi")
+bus = &"Sfx"
+
+[node name="TrickLandedSound" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer"]
+stream = ExtResource("15_ajc0o")
+bus = &"Sfx"
+
+[node name="ChristAirSound" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer"]
+stream = ExtResource("16_jvvuu")
+bus = &"Sfx"
+
+[node name="RollingSound" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer"]
+stream = ExtResource("17_glege")
+autoplay = true
+bus = &"Sfx"
+
+[node name="Tricks" type="Node3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer"]
+
+[node name="TrickSound1" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer/Tricks"]
+stream = ExtResource("18_1x56u")
+bus = &"Sfx"
+
+[node name="TrickSound2" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer/Tricks"]
+stream = ExtResource("19_rn211")
+bus = &"Sfx"
+
+[node name="TrickSound3" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer/Tricks"]
+stream = ExtResource("20_aguc4")
+bus = &"Sfx"
+
+[node name="TrickSound4" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer/Tricks"]
+stream = ExtResource("21_w8jt0")
+bus = &"Sfx"
+
+[node name="TrickSound5" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer/Tricks"]
+stream = ExtResource("22_5v66l")
+bus = &"Sfx"
+
 [node name="Ground" type="StaticBody3D" parent="GameViewportContainer/GameViewport"]
 
 [node name="WorldBoundary" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Ground"]
@@ -158,6 +244,10 @@ timer_label = NodePath("../HUD/GameTimer")
 starting_screen = NodePath("../StartScreen")
 results_screen = NodePath("../ResultsScreen")
 hud_root = NodePath("../HUD")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="GameManager"]
+stream = ExtResource("26_8dhet")
+bus = &"Music"
 
 [node name="HUD" type="Control" parent="."]
 layout_mode = 1
