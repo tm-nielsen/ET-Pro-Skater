@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=25 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Theme" uid="uid://b8qfxv23aehvm" path="res://ui/ui_theme.tres" id="1_5eeqv"]
 [ext_resource type="Script" path="res://scripts/game_loop/game_manager.gd" id="1_8law2"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://scripts/score_system/score_counter.gd" id="10_tyrew"]
 [ext_resource type="Script" path="res://scripts/score_system/score_display.gd" id="11_7f101"]
 [ext_resource type="Script" path="res://scripts/game_loop/results_display.gd" id="14_xjeju"]
+[ext_resource type="PackedScene" uid="uid://bmdx3qvem44i5" path="res://scenes/prefabs/high_score_entry.tscn" id="15_ujck0"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
 ambient_light_source = 2
@@ -153,7 +154,7 @@ shape = SubResource("ConcavePolygonShape3D_eo88g")
 process_mode = 3
 anchors_preset = 0
 script = ExtResource("1_8law2")
-game_duration = 20.0
+game_duration = 5.0
 timer_label = NodePath("../HUD/GameTimer")
 starting_screen = NodePath("../StartScreen")
 results_screen = NodePath("../ResultsScreen")
@@ -308,7 +309,8 @@ text = "Press a Thing
 to make it Go"
 horizontal_alignment = 1
 
-[node name="ResultsScreen" type="Control" parent="." node_paths=PackedStringArray("score_label", "score_counter")]
+[node name="ResultsScreen" type="Control" parent="." node_paths=PackedStringArray("score_label", "score_counter", "score_entry_parent", "name_label", "letter_button_parent", "confirm_name_button", "clear_name_button")]
+process_mode = 3
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -316,8 +318,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("14_xjeju")
-score_label = NodePath("Label")
+score_label = NodePath("Container/NameEntry/ScoreLabel")
 score_counter = NodePath("../HUD/ScoreCounter")
+score_entry_parent = NodePath("Container/HighScores")
+score_entry_prefab = ExtResource("15_ujck0")
+name_label = NodePath("Container/NameEntry/NameLabel")
+letter_button_parent = NodePath("Container/NameEntry/LetterGrid")
+confirm_name_button = NodePath("Container/NameEntry/HBox/ConfirmButton")
+clear_name_button = NodePath("Container/NameEntry/HBox/ClearButton")
 
 [node name="Background" type="ColorRect" parent="ResultsScreen"]
 layout_mode = 1
@@ -328,14 +336,248 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.588235)
 
-[node name="Label" type="Label" parent="ResultsScreen"]
+[node name="Container" type="HBoxContainer" parent="ResultsScreen"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.5
-anchor_right = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = -24.0
 grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NameEntry" type="VBoxContainer" parent="ResultsScreen/Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="ResultsScreen/Container/NameEntry"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 64
-text = "Final Score: 69,420"
+text = "1,000,000"
+horizontal_alignment = 1
+
+[node name="Header" type="Label" parent="ResultsScreen/Container/NameEntry"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Enter Name:"
+horizontal_alignment = 1
+
+[node name="LetterGrid" type="GridContainer" parent="ResultsScreen/Container/NameEntry"]
+layout_mode = 2
+columns = 7
+
+[node name="A" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "A"
+
+[node name="B" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "B"
+
+[node name="C" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "C"
+
+[node name="D" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "D"
+
+[node name="E" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "E"
+
+[node name="F" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "F"
+
+[node name="G" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "G"
+
+[node name="H" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "H"
+
+[node name="I" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "I"
+
+[node name="J" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "J"
+
+[node name="K" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "K"
+
+[node name="L" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "L"
+
+[node name="M" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "M"
+
+[node name="N" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "N"
+
+[node name="O" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "O"
+
+[node name="P" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "P"
+
+[node name="Q" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Q"
+
+[node name="R" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "R"
+
+[node name="S" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "S"
+
+[node name="T" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "T"
+
+[node name="U" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "U"
+
+[node name="V" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "V"
+
+[node name="W" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "W"
+
+[node name="X" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "X"
+
+[node name="Y" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Y"
+
+[node name="Z" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+text = "Z"
+
+[node name="NameLabel" type="Label" parent="ResultsScreen/Container/NameEntry"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "ABC"
+horizontal_alignment = 1
+
+[node name="HBox" type="HBoxContainer" parent="ResultsScreen/Container/NameEntry"]
+layout_mode = 2
+
+[node name="ClearButton" type="Button" parent="ResultsScreen/Container/NameEntry/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Clear"
+
+[node name="ConfirmButton" type="Button" parent="ResultsScreen/Container/NameEntry/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Confirm"
+
+[node name="Spacer" type="Control" parent="ResultsScreen/Container"]
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+
+[node name="HighScores" type="VBoxContainer" parent="ResultsScreen/Container"]
+layout_direction = 2
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Header" type="Label" parent="ResultsScreen/Container/HighScores"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Top Five"
+horizontal_alignment = 1
+
+[node name="ColumnHeaders" type="HBoxContainer" parent="ResultsScreen/Container/HighScores"]
+layout_direction = 2
+layout_mode = 2
+alignment = 1
+
+[node name="NameHeader" type="Label" parent="ResultsScreen/Container/HighScores/ColumnHeaders"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 48
+text = "Name"
+horizontal_alignment = 1
+
+[node name="ScoreHeader" type="Label" parent="ResultsScreen/Container/HighScores/ColumnHeaders"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 48
+text = "Score"
+horizontal_alignment = 1
 
 [connection signal="hit_wall" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/TrickManager" method="on_character_hit_wall"]
 [connection signal="landed" from="GameViewportContainer/GameViewport/Character" to="GameViewportContainer/GameViewport/Character/AnimatedCharacter" method="_on_character_landed"]
