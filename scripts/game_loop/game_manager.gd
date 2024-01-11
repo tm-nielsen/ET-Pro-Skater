@@ -10,9 +10,8 @@ enum GameState { PREGAME, GAME, RESULTS }
 @export var hud_root: Control
 
 @export_subgroup("music")
-@export var music_player: AudioStreamPlayer
-@export var title_loop: AudioStream
-@export var stage_track: AudioStream
+@export var pause_loop_player: AudioStreamPlayer
+@export var game_track_player: AudioStreamPlayer
 
 var game_time_remaining: float
 var game_state: GameState
@@ -23,7 +22,7 @@ func _ready():
     starting_screen.visible = true
     results_screen.visible = false
     hud_root.visible = false
-    _play_music(title_loop)
+    pause_loop_player.play()
 
 func _process(delta):
     match game_state:
@@ -45,7 +44,9 @@ func start_game():
     starting_screen.visible = false
     hud_root.visible = true
     game_state = GameState.GAME
-    _play_music(stage_track)
+    pause_loop_player.stop()
+    game_track_player.play(110)
+    game_time_remaining -=110
     InputProxy._process(0)
 
 
@@ -66,9 +67,5 @@ func end_game():
     hud_root.visible = false
     results_screen.start_display()
     game_state = GameState.RESULTS
-    _play_music(title_loop)
-
-
-func _play_music(audio_stream: AudioStream):
-    music_player.stream = audio_stream
-    music_player.play()
+    game_track_player.stop()
+    pause_loop_player.play()

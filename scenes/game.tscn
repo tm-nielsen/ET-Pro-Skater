@@ -237,20 +237,24 @@ mesh = SubResource("BoxMesh_88pcn")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/MeshInstance3D/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_eo88g")
 
-[node name="GameManager" type="Control" parent="." node_paths=PackedStringArray("timer_label", "starting_screen", "results_screen", "hud_root", "music_player")]
+[node name="GameManager" type="Control" parent="." node_paths=PackedStringArray("timer_label", "starting_screen", "results_screen", "hud_root", "pause_loop_player", "game_track_player")]
 process_mode = 3
 anchors_preset = 0
 script = ExtResource("1_8law2")
-game_duration = 119.5
+game_duration = 118.25
 timer_label = NodePath("../HUD/GameTimer")
 starting_screen = NodePath("../StartScreen")
 results_screen = NodePath("../ResultsScreen")
 hud_root = NodePath("../HUD")
-music_player = NodePath("AudioStreamPlayer")
-title_loop = ExtResource("26_8dhet")
-stage_track = ExtResource("27_38xcb")
+pause_loop_player = NodePath("PauseMusic")
+game_track_player = NodePath("GameMusic")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="GameManager"]
+[node name="PauseMusic" type="AudioStreamPlayer" parent="GameManager"]
+stream = ExtResource("26_8dhet")
+bus = &"Music"
+
+[node name="GameMusic" type="AudioStreamPlayer" parent="GameManager"]
+stream = ExtResource("27_38xcb")
 bus = &"Music"
 
 [node name="HUD" type="Control" parent="."]
