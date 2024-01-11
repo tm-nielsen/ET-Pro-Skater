@@ -35,9 +35,6 @@ func _ready():
     InputProxy.direction_changed.connect(on_input_direction_changed)
     animation_player.play("Idle")
 
-func _process(_delta):
-    character_skeleton.scale.x = CharacterController.is_forward_sign
-
 func on_crouch_pressed():
     if CharacterController.input_disabled:
         return
@@ -80,6 +77,7 @@ func _on_character_left_ground():
 
 func _on_character_landed():
     var input_direction = InputProxy.direction
+    animation_player.play(get_aligned_animation_name("Idle"))
     input_direction *= CharacterController.is_forward_sign
     start_turn_tween(input_direction.x)
     start_tilt_tween(input_direction.y)
@@ -91,7 +89,13 @@ func reset():
 
 
 func _on_character_pushed():
-    animation_player.play("Push")
+    animation_player.play(get_aligned_animation_name("Push"))
+
+
+func get_aligned_animation_name(base_name: String) -> String:
+    if CharacterController.is_backwards:
+        base_name += " Reverse"
+    return base_name
 
 
 func _set_body_scale(new_scale: Vector3):
