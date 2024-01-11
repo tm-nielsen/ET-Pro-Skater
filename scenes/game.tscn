@@ -84,8 +84,8 @@ transform = Transform3D(0.994805, -0.0566783, 0.084566, 0, 0.830683, 0.556746, -
 current = true
 script = ExtResource("1_jnuqt")
 target = NodePath("../Character")
-position_offset = Vector3(1, 1.5, 2)
-look_offset = Vector3(0.5, 1, 0)
+position_offset = Vector3(0.5, 1.5, 2)
+look_offset = Vector3(0.3, 1, 0)
 
 [node name="Character" type="CharacterBody3D" parent="GameViewportContainer/GameViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
@@ -154,7 +154,6 @@ shape = SubResource("ConcavePolygonShape3D_eo88g")
 process_mode = 3
 anchors_preset = 0
 script = ExtResource("1_8law2")
-game_duration = 5.0
 timer_label = NodePath("../HUD/GameTimer")
 starting_screen = NodePath("../StartScreen")
 results_screen = NodePath("../ResultsScreen")

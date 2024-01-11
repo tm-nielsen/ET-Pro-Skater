@@ -86,9 +86,6 @@ func process_turning(delta):
 func _turn(turn_angle: float):
     rotate_y(turn_angle)
     velocity = velocity.rotated(Vector3.UP, turn_angle)
-    
-    if is_backwards: forward = basis.z
-    else: forward = -basis.z
 
 
 func align_body():
@@ -97,11 +94,13 @@ func align_body():
         var planar_velocity = Plane(floor_normal).project(velocity)
         if planar_velocity.length_squared() > 0:
             basis = Basis.looking_at(planar_velocity.normalized(), floor_normal, is_backwards)
+            forward = -basis.z * is_forward_sign
             return
     
     var body_forward = Plane(floor_normal).project(-basis.z)
     if body_forward.length_squared() > 0:
         basis = Basis.looking_at(body_forward, floor_normal, is_backwards)
+        forward = -basis.z * is_forward_sign
 
 
 func apply_slope_force(delta):

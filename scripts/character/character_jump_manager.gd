@@ -50,7 +50,7 @@ func _process(_delta):
 
 func execute_ollie(force_scale := 1.0):
     var ollie_impulse = ollie_force.y * Vector3.UP
-    ollie_impulse -= CharacterController.forward * ollie_force.x * stored_ollie_direction
+    ollie_impulse += CharacterController.forward * ollie_force.x
 
     character_controller.velocity += ollie_impulse * force_scale
     has_ollied = true
