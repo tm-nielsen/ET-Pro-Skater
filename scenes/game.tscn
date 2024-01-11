@@ -309,7 +309,7 @@ text = "Press a Thing
 to make it Go"
 horizontal_alignment = 1
 
-[node name="ResultsScreen" type="Control" parent="." node_paths=PackedStringArray("score_label", "score_counter", "score_entry_parent", "name_label", "letter_button_parent", "confirm_name_button", "clear_name_button")]
+[node name="ResultsScreen" type="Control" parent="." node_paths=PackedStringArray("score_label", "score_counter", "play_again_button", "score_entry_parent", "name_entry_root", "name_label", "letter_button_parent", "confirm_name_button", "clear_name_button")]
 process_mode = 3
 layout_mode = 1
 anchors_preset = 15
@@ -318,14 +318,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("14_xjeju")
-score_label = NodePath("Container/NameEntry/ScoreLabel")
+score_label = NodePath("Container/VBox/ScoreLabel")
 score_counter = NodePath("../HUD/ScoreCounter")
+play_again_button = NodePath("Container/VBox/ReplayContainer/PlayAgainButton")
 score_entry_parent = NodePath("Container/HighScores")
 score_entry_prefab = ExtResource("15_ujck0")
-name_label = NodePath("Container/NameEntry/NameLabel")
-letter_button_parent = NodePath("Container/NameEntry/LetterGrid")
-confirm_name_button = NodePath("Container/NameEntry/HBox/ConfirmButton")
-clear_name_button = NodePath("Container/NameEntry/HBox/ClearButton")
+name_entry_root = NodePath("Container/VBox/NameEntry")
+name_label = NodePath("Container/VBox/NameEntry/NameLabel")
+letter_button_parent = NodePath("Container/VBox/NameEntry/LetterGrid")
+confirm_name_button = NodePath("Container/VBox/NameEntry/HBox/ConfirmButton")
+clear_name_button = NodePath("Container/VBox/NameEntry/HBox/ClearButton")
 
 [node name="Background" type="ColorRect" parent="ResultsScreen"]
 layout_mode = 1
@@ -348,198 +350,215 @@ offset_bottom = -24.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="NameEntry" type="VBoxContainer" parent="ResultsScreen/Container"]
+[node name="VBox" type="VBoxContainer" parent="ResultsScreen/Container"]
 layout_mode = 2
-size_flags_horizontal = 3
 alignment = 1
 
-[node name="ScoreLabel" type="Label" parent="ResultsScreen/Container/NameEntry"]
+[node name="ScoreLabel" type="Label" parent="ResultsScreen/Container/VBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 text = "1,000,000"
 horizontal_alignment = 1
 
-[node name="Header" type="Label" parent="ResultsScreen/Container/NameEntry"]
+[node name="ReplayContainer" type="CenterContainer" parent="ResultsScreen/Container/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayAgainButton" type="Button" parent="ResultsScreen/Container/VBox/ReplayContainer"]
+visible = false
+custom_minimum_size = Vector2(280, 100)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_colors/font_outline_color = Color(0.184314, 0.501961, 0.443137, 1)
+theme_override_font_sizes/font_size = 48
+text = "Play Again"
+
+[node name="NameEntry" type="VBoxContainer" parent="ResultsScreen/Container/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="Header" type="Label" parent="ResultsScreen/Container/VBox/NameEntry"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "Enter Name:"
 horizontal_alignment = 1
 
-[node name="LetterGrid" type="GridContainer" parent="ResultsScreen/Container/NameEntry"]
+[node name="LetterGrid" type="GridContainer" parent="ResultsScreen/Container/VBox/NameEntry"]
 layout_mode = 2
 columns = 7
 
-[node name="A" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="A" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "A"
 
-[node name="B" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="B" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "B"
 
-[node name="C" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="C" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "C"
 
-[node name="D" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="D" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "D"
 
-[node name="E" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="E" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "E"
 
-[node name="F" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="F" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "F"
 
-[node name="G" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="G" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "G"
 
-[node name="H" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="H" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "H"
 
-[node name="I" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="I" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "I"
 
-[node name="J" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="J" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "J"
 
-[node name="K" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="K" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "K"
 
-[node name="L" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="L" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "L"
 
-[node name="M" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="M" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "M"
 
-[node name="N" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="N" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "N"
 
-[node name="O" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="O" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "O"
 
-[node name="P" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="P" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "P"
 
-[node name="Q" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="Q" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Q"
 
-[node name="R" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="R" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "R"
 
-[node name="S" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="S" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "S"
 
-[node name="T" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="T" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "T"
 
-[node name="U" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="U" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "U"
 
-[node name="V" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="V" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "V"
 
-[node name="W" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="W" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "W"
 
-[node name="X" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="X" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "X"
 
-[node name="Y" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="Y" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Y"
 
-[node name="Z" type="Button" parent="ResultsScreen/Container/NameEntry/LetterGrid"]
+[node name="Z" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/LetterGrid"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Z"
 
-[node name="NameLabel" type="Label" parent="ResultsScreen/Container/NameEntry"]
+[node name="NameLabel" type="Label" parent="ResultsScreen/Container/VBox/NameEntry"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 text = "ABC"
 horizontal_alignment = 1
 
-[node name="HBox" type="HBoxContainer" parent="ResultsScreen/Container/NameEntry"]
+[node name="HBox" type="HBoxContainer" parent="ResultsScreen/Container/VBox/NameEntry"]
 layout_mode = 2
 
-[node name="ClearButton" type="Button" parent="ResultsScreen/Container/NameEntry/HBox"]
+[node name="ClearButton" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Clear"
 
-[node name="ConfirmButton" type="Button" parent="ResultsScreen/Container/NameEntry/HBox"]
+[node name="ConfirmButton" type="Button" parent="ResultsScreen/Container/VBox/NameEntry/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Confirm"

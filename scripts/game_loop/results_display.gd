@@ -5,6 +5,7 @@ const scores_filepath := "user://scores.json"
 
 @export var score_label: Label
 @export var score_counter: ScoreCounter
+@export var play_again_button: Button
 
 @export_subgroup("high score display")
 @export var maximum_highscores := 5
@@ -12,6 +13,7 @@ const scores_filepath := "user://scores.json"
 @export var score_entry_prefab: PackedScene
 
 @export_subgroup("Name Entry")
+@export var name_entry_root: Control
 @export var maximum_length := 3
 @export var name_label: Label
 @export var letter_button_parent: Control
@@ -24,6 +26,7 @@ var score_entries: Array[HighScoreEntry] = []
 
 
 func _ready():
+    play_again_button.pressed.connect(_on_play_again_button_pressed)
     confirm_name_button.pressed.connect(_on_confirm_name_button_pressed)
     clear_name_button.pressed.connect(_on_clear_name_button_pressed)
     for letter_button in letter_button_parent.get_children():
@@ -35,6 +38,7 @@ func start_display():
     visible = true
     final_score = score_counter.current_score
     score_label.text = ScoreDisplay.get_seperated_number_string(final_score)
+    play_again_button.visible = false
     show_high_scores(read_scores())
     start_name_selection()
 
@@ -57,6 +61,7 @@ func start_name_selection():
     set_button_disabled_and_focus_mode(confirm_name_button, true)
     set_button_disabled_and_focus_mode(clear_name_button, true)
     set_letter_buttons_disabled(false)
+    name_entry_root.visible = true
     letter_button_parent.get_child(0).grab_focus()
 
 func set_letter_buttons_disabled(disabled := true):
@@ -94,6 +99,9 @@ func _on_confirm_name_button_pressed():
     set_button_disabled_and_focus_mode(confirm_name_button, true)
     set_button_disabled_and_focus_mode(clear_name_button, true)
     set_letter_buttons_disabled()
+    name_entry_root.visible = false
+    play_again_button.visible = true
+    play_again_button.grab_focus()
 
 
 func read_scores() -> Array:
@@ -118,5 +126,5 @@ func save_scores(score_info_list: Array):
     file.close()
 
 
-func restart_game():
+func _on_play_again_button_pressed():
     get_tree().reload_current_scene()
