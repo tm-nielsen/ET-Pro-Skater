@@ -10,12 +10,14 @@ const TrickType = CharacterTrickManager.TrickType
 
 @export_subgroup("parameters")
 @export var combo_duration := 5.0
+@export var trick_history_length := 3
 @export var half_spin_score := 3
 @export var half_spin_multiplier_increase := 0.5
 @export var grab_tilt_score_frequency := 2.0
 @export var christ_air_score_frequency := 16.0
 
 var trick_info_array
+var trick_history := []
 
 var trick_held: bool
 var held_trick_start_timestamp: int
@@ -60,16 +62,28 @@ func on_trick_completed(trick_type: TrickType):
         return
     if trick_type >= trick_info_array.size():
         return
+
     var trick_info = trick_info_array[trick_type]
-
-    potential_score += trick_info.score
-    display.add_potential_score(trick_info.name, trick_info.score)
-
+    var trick_name = trick_info.name
     var multiplier_increase = trick_info.multiplier_increase
+    var score_increase = trick_info.score
+
     if multiplier_increase > 0:
+        if trick_history.has(trick_type):
+            trick_name = "Stale Trick"
+            multiplier_increase = 0
+            score_increase = 1
+        else:
+            trick_history.append(trick_type)
+            if trick_history.size() > trick_history_length:
+                trick_history.pop_front()
+
         score_multiplier += multiplier_increase
         multiplier_lifetime = combo_duration
         display.update_multiplier_display(score_multiplier)
+
+    potential_score += score_increase
+    display.add_potential_score(trick_name, score_increase)
 
 
 func on_half_spins_landed(half_spin_count: int):
@@ -122,6 +136,7 @@ func on_crashed():
     score_multiplier = 1
     display.on_crash()
     display.end_held_trick()
+    trick_history = []
 
 
 func on_landed_successfully():
