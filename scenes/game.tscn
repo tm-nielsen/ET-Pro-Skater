@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=41 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Theme" uid="uid://b8qfxv23aehvm" path="res://ui/ui_theme.tres" id="1_5eeqv"]
 [ext_resource type="Script" path="res://scripts/game_loop/game_manager.gd" id="1_8law2"]
@@ -30,6 +30,7 @@
 [ext_resource type="AudioStream" uid="uid://ccmqc1gj8mwj4" path="res://audio/sfx/XFXTrick-004.ogg" id="21_w8jt0"]
 [ext_resource type="AudioStream" uid="uid://b02ekd0feedmh" path="res://audio/sfx/XFXTrick-005.ogg" id="22_5v66l"]
 [ext_resource type="AudioStream" uid="uid://7f7e6rl6wo6g" path="res://audio/music/XMXETSkateTitleScreen.ogg" id="26_8dhet"]
+[ext_resource type="AudioStream" uid="uid://co8paw3wubqk3" path="res://audio/music/XMXETSkateStage.ogg" id="27_38xcb"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
 ambient_light_source = 2
@@ -236,17 +237,20 @@ mesh = SubResource("BoxMesh_88pcn")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/MeshInstance3D/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_eo88g")
 
-[node name="GameManager" type="Control" parent="." node_paths=PackedStringArray("timer_label", "starting_screen", "results_screen", "hud_root")]
+[node name="GameManager" type="Control" parent="." node_paths=PackedStringArray("timer_label", "starting_screen", "results_screen", "hud_root", "music_player")]
 process_mode = 3
 anchors_preset = 0
 script = ExtResource("1_8law2")
+game_duration = 119.5
 timer_label = NodePath("../HUD/GameTimer")
 starting_screen = NodePath("../StartScreen")
 results_screen = NodePath("../ResultsScreen")
 hud_root = NodePath("../HUD")
+music_player = NodePath("AudioStreamPlayer")
+title_loop = ExtResource("26_8dhet")
+stage_track = ExtResource("27_38xcb")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="GameManager"]
-stream = ExtResource("26_8dhet")
 bus = &"Music"
 
 [node name="HUD" type="Control" parent="."]
