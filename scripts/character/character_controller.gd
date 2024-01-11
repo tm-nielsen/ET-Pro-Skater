@@ -10,6 +10,7 @@ static var is_grounded: bool = true
 static var is_backwards: bool
 static var is_forward_sign: get = _get_forward_sign
 static var forward: Vector3
+static var input_disabled: bool
 
 @export var push_force := 20.0
 @export var push_delay := 1.0
@@ -26,6 +27,7 @@ func _ready():
     is_grounded = true
     is_backwards = false
     forward = -basis.z
+    input_disabled = false
     velocity += Vector3.DOWN
     move_and_slide()
 
@@ -57,6 +59,8 @@ func process_wall_touching():
 
 
 func process_pushing():
+    if input_disabled:
+        return
     if can_push and InputProxy.just_pushed:
         if is_backwards:
             velocity -= push_force * -basis.z
@@ -74,6 +78,8 @@ func _enable_pushing():
 
 
 func process_turning(delta):
+    if input_disabled:
+        return
     if InputProxy.horizontal_axis != 0:
         _turn(-turn_force * InputProxy.horizontal_axis * delta)
 

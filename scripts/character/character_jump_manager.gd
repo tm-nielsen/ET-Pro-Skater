@@ -28,6 +28,8 @@ func _ready():
     InputProxy.direction_changed.connect(_on_input_direction_changed)
 
 func _process(_delta):
+    if CharacterController.input_disabled:
+        return
     if CharacterController.is_grounded:
         if was_crouched_last_frame && !has_ollied:
             store_ollie_potential()
@@ -89,6 +91,8 @@ func _on_character_landed():
 
 
 func _on_input_direction_changed(input_direction: Vector2i):
+    if CharacterController.input_disabled:
+        return
     if CharacterController.is_grounded && InputProxy.is_crouched:
         var old_tilt = InputProxy.direction.y
         if input_direction.y != old_tilt && old_tilt != 0:

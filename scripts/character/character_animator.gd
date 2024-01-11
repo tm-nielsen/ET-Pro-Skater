@@ -33,20 +33,25 @@ func _ready():
     InputProxy.crouch_pressed.connect(on_crouch_pressed)
     InputProxy.crouch_released.connect(on_crouch_released)
     InputProxy.direction_changed.connect(on_input_direction_changed)
+    animation_player.play("Idle")
 
 func _process(_delta):
     character_skeleton.scale.x = CharacterController.is_forward_sign
 
 func on_crouch_pressed():
+    if CharacterController.input_disabled:
+        return
     tween_property("body_scale", crouch_scale, crouch_tween_duration)
 
 func on_crouch_released():
+    if CharacterController.input_disabled:
+        return
     var tween = tween_property("body_scale", jump_scale, crouch_tween_duration)
     tween.tween_property(self, "body_scale", Vector3.ONE, crouch_tween_duration)
 
 
 func on_input_direction_changed(input_direction: Vector2i):
-    if !CharacterController.is_grounded:
+    if !CharacterController.is_grounded || CharacterController.input_disabled:
         return
 
     var old_input_direction = InputProxy.direction
@@ -78,6 +83,11 @@ func _on_character_landed():
     input_direction *= CharacterController.is_forward_sign
     start_turn_tween(input_direction.x)
     start_tilt_tween(input_direction.y)
+
+func reset():
+    kill_all_active_tweens()
+    position = Vector3.ZERO
+    rotation = Vector3.ZERO
 
 
 func _on_character_pushed():

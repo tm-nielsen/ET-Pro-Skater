@@ -30,7 +30,6 @@ var commitment_tween: Tween
 
 func _ready():
     skeletal_animation_player = character_animator.animation_player
-    skeletal_animation_player.animation_finished.connect(on_animation_finished)
 
 
 func start_kickflip(flick_direction: float):
@@ -88,13 +87,14 @@ func end_christ_air():
 func crash():
     kill_all_active_tweens()
     board_animator.reset()
+    character_animator.reset()
     character_animator.board_bone.override_pose = false
     skeletal_animation_player.play("Crash")
 
-func on_animation_finished(animation_name: String):
-    if animation_name == "Crash":
-        skeletal_animation_player.play("Idle")
-        board_animator.reset()
+
+func uncrash():
+    skeletal_animation_player.play("Idle")
+    board_animator.reset()
 
 
 func reset():

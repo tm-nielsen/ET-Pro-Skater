@@ -34,6 +34,9 @@ signal christ_air_started()
 @export_subgroup("christ air", "christ_air")
 @export var christ_air_startup_time := 0.35
 
+@export_subgroup("crash")
+@export var crash_input_delay := 2.0
+
 var body_tilt_timestamp: float
 var stored_body_tilt: int
 
@@ -242,7 +245,7 @@ func on_character_landed():
         crash()
 
 func crash():
-    if christ_air_startup_time:
+    if christ_air_startup_tween:
         christ_air_startup_tween.kill()
     if CharacterController.is_backwards:
         character_body.rotation.y += PI
@@ -250,7 +253,16 @@ func crash():
     character_body.velocity *= 0.15
     trick_animator.crash()
     trick_in_progress = false
+
+    CharacterController.input_disabled = true
+    var uncrash_tween = create_tween()
+    uncrash_tween.tween_interval(crash_input_delay)
+    uncrash_tween.tween_callback(_uncrash)
     crashed.emit()
+
+func _uncrash():
+    CharacterController.input_disabled = false
+    trick_animator.uncrash()
 
 
 func on_character_hit_wall(wall_normal: Vector3):
