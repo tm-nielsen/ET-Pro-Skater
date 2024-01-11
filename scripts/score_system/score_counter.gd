@@ -48,6 +48,7 @@ func _process(delta):
         if multiplier_lifetime < 0:
             score_multiplier = 1
             display.reset_multiplier_display()
+            trick_history = []
 
 
 func process_held_tricks():
@@ -94,6 +95,7 @@ func on_half_spins_landed(half_spin_count: int):
     display.add_potential_score(spin_string, score_increase)
 
     score_multiplier += half_spin_multiplier_increase * absolute_half_spin_count
+    multiplier_lifetime = combo_duration
     display.update_multiplier_display(score_multiplier)
 
 
