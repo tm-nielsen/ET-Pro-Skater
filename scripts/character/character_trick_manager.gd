@@ -250,7 +250,7 @@ func crash():
     if CharacterController.is_backwards:
         character_body.rotation.y += PI
     CharacterController.is_backwards = false
-    character_body.velocity *= 0.15
+    character_body.velocity *= 0.01
     trick_animator.crash()
     trick_in_progress = false
 
