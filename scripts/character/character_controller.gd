@@ -23,6 +23,9 @@ var can_push := true
 
 
 func _ready():
+    is_grounded = true
+    is_backwards = false
+    forward = -basis.z
     velocity += Vector3.DOWN
     move_and_slide()
 
