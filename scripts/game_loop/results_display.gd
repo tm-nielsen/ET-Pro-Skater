@@ -38,9 +38,25 @@ func start_display():
     visible = true
     final_score = score_counter.current_score
     score_label.text = ScoreDisplay.get_seperated_number_string(final_score)
-    play_again_button.visible = false
+
     show_high_scores(read_scores())
-    start_name_selection()
+    if _is_eligible_highscore():
+        play_again_button.visible = false
+        start_name_selection()
+    else:
+        name_entry_root.visible = false
+        play_again_button.visible = true
+        play_again_button.grab_focus()
+
+
+func _is_eligible_highscore() -> bool:
+    var saved_scores_info_list = read_scores()
+    if saved_scores_info_list.size() < maximum_highscores:
+        return true
+    for saved_score_info in saved_scores_info_list:
+        if final_score > saved_score_info.score:
+            return true
+    return false
 
 
 func show_high_scores(score_info_list: Array):
