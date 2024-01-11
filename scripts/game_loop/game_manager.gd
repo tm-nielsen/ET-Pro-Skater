@@ -45,8 +45,7 @@ func start_game():
     hud_root.visible = true
     game_state = GameState.GAME
     pause_loop_player.stop()
-    game_track_player.play(110)
-    game_time_remaining -=110
+    game_track_player.play()
     InputProxy._process(0)
 
 
