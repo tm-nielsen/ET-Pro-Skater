@@ -242,6 +242,8 @@ func on_character_landed():
         crash()
 
 func crash():
+    if christ_air_startup_time:
+        christ_air_startup_tween.kill()
     if CharacterController.is_backwards:
         character_body.rotation.y += PI
     CharacterController.is_backwards = false

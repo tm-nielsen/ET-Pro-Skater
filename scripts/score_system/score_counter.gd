@@ -104,6 +104,8 @@ func on_christ_air_started():
     display.start_held_trick("Christ Air")
 
 func on_christ_air_ended():
+    if !trick_held:
+        return
     potential_score += round(get_held_trick_score())
     trick_held = false
     display.end_held_trick()
