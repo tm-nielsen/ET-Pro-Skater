@@ -15,8 +15,8 @@
 [ext_resource type="AudioStream" uid="uid://cyn6p2x2pcelw" path="res://audio/sfx/XFXJumpOnly.ogg" id="10_fymj4"]
 [ext_resource type="Script" path="res://scripts/score_system/score_counter.gd" id="10_tyrew"]
 [ext_resource type="Script" path="res://scripts/score_system/score_display.gd" id="11_7f101"]
-[ext_resource type="AudioStream" uid="uid://dpgv7mwsqycok" path="res://audio/sfx/XFXOllieOnly.ogg" id="11_tncn4"]
-[ext_resource type="AudioStream" uid="uid://div7ku042wgl3" path="res://audio/sfx/XFXPush.ogg" id="12_446pn"]
+[ext_resource type="AudioStream" uid="uid://b6x2x2j208cu3" path="res://audio/sfx/XFXOllieUpdated.ogg" id="11_dckgx"]
+[ext_resource type="AudioStream" uid="uid://bkaje3wl43uhr" path="res://audio/sfx/XFXPushUpdated.ogg" id="12_45ccg"]
 [ext_resource type="AudioStream" uid="uid://bty1r2qws8kr8" path="res://audio/sfx/XFXCrash.ogg" id="13_whtyh"]
 [ext_resource type="AudioStream" uid="uid://duql6ip5v5f12" path="res://audio/sfx/XFXLandingNormal.ogg" id="14_fkeoi"]
 [ext_resource type="Script" path="res://scripts/game_loop/results_display.gd" id="14_xjeju"]
@@ -165,11 +165,11 @@ stream = ExtResource("10_fymj4")
 bus = &"Sfx"
 
 [node name="OllieSound" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer"]
-stream = ExtResource("11_tncn4")
+stream = ExtResource("11_dckgx")
 bus = &"Sfx"
 
 [node name="PushSound" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer"]
-stream = ExtResource("12_446pn")
+stream = ExtResource("12_45ccg")
 bus = &"Sfx"
 
 [node name="CrashSound" type="AudioStreamPlayer3D" parent="GameViewportContainer/GameViewport/Character/SFXPlayer"]
