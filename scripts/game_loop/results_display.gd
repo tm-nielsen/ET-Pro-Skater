@@ -54,30 +54,34 @@ func show_high_scores(score_info_list: Array):
 func start_name_selection():
     entered_name = ""
     name_label.text = "---"
-    confirm_name_button.disabled = true
-    clear_name_button.disabled = true
+    set_button_disabled_and_focus_mode(confirm_name_button, true)
+    set_button_disabled_and_focus_mode(clear_name_button, true)
     set_letter_buttons_disabled(false)
     letter_button_parent.get_child(0).grab_focus()
 
 func set_letter_buttons_disabled(disabled := true):
     for letter_button in letter_button_parent.get_children():
-        letter_button.disabled = disabled
+        set_button_disabled_and_focus_mode(letter_button, disabled)
+
+func set_button_disabled_and_focus_mode(button: Button, disabled: bool):
+    button.disabled = disabled
+    button.focus_mode = FOCUS_NONE if disabled else FOCUS_ALL
 
 
 func _on_letter_button_pressed(letter: String):
     entered_name += letter
     name_label.text = entered_name
-    confirm_name_button.disabled = false
-    clear_name_button.disabled = false
+    set_button_disabled_and_focus_mode(confirm_name_button, false)
+    set_button_disabled_and_focus_mode(clear_name_button, false)
 
     if entered_name.length() >= maximum_length:
         set_letter_buttons_disabled()
+        confirm_name_button.grab_focus()
 
 func _on_clear_name_button_pressed():
     start_name_selection()
 
 func _on_confirm_name_button_pressed():
-    print("confirming name")
     var saveable_score_info = {"name": entered_name, "score": final_score}
     var score_info_list = read_scores()
     score_info_list.append(saveable_score_info)
@@ -87,8 +91,9 @@ func _on_confirm_name_button_pressed():
     save_scores(score_info_list)
     show_high_scores(score_info_list)
 
-    confirm_name_button.disabled = true
-    clear_name_button.disabled = true
+    set_button_disabled_and_focus_mode(confirm_name_button, true)
+    set_button_disabled_and_focus_mode(clear_name_button, true)
+    set_letter_buttons_disabled()
 
 
 func read_scores() -> Array:
