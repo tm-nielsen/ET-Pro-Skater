@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://dgce8uj4j5jur"]
+[gd_scene load_steps=43 format=3 uid="uid://dgce8uj4j5jur"]
 
 [ext_resource type="Theme" uid="uid://b8qfxv23aehvm" path="res://ui/ui_theme.tres" id="1_5eeqv"]
 [ext_resource type="Script" path="res://scripts/game_loop/game_manager.gd" id="1_8law2"]
@@ -29,7 +29,9 @@
 [ext_resource type="AudioStream" uid="uid://cvlm8vmccgkf4" path="res://audio/sfx/XFXTrick-003.ogg" id="20_aguc4"]
 [ext_resource type="AudioStream" uid="uid://ccmqc1gj8mwj4" path="res://audio/sfx/XFXTrick-004.ogg" id="21_w8jt0"]
 [ext_resource type="AudioStream" uid="uid://b02ekd0feedmh" path="res://audio/sfx/XFXTrick-005.ogg" id="22_5v66l"]
+[ext_resource type="PackedScene" uid="uid://bw5m6goiaiwjh" path="res://3d assets/models/park_objects/composite ramp.blend" id="25_shrm1"]
 [ext_resource type="AudioStream" uid="uid://7f7e6rl6wo6g" path="res://audio/music/XMXETSkateTitleScreen.ogg" id="26_8dhet"]
+[ext_resource type="PackedScene" uid="uid://d1lpr4p81a6vg" path="res://3d assets/models/park_objects/boxes.blend" id="26_idtbf"]
 [ext_resource type="AudioStream" uid="uid://co8paw3wubqk3" path="res://audio/music/XMXETSkateStage.ogg" id="27_38xcb"]
 
 [sub_resource type="Environment" id="Environment_gl5r6"]
@@ -215,27 +217,36 @@ bus = &"Sfx"
 stream = ExtResource("22_5v66l")
 bus = &"Sfx"
 
-[node name="Ground" type="StaticBody3D" parent="GameViewportContainer/GameViewport"]
+[node name="WorldGeometry" type="Node3D" parent="GameViewportContainer/GameViewport"]
 
-[node name="WorldBoundary" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/Ground"]
+[node name="Ground" type="StaticBody3D" parent="GameViewportContainer/GameViewport/WorldGeometry"]
+
+[node name="WorldBoundary" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/WorldGeometry/Ground"]
 shape = SubResource("WorldBoundaryShape3D_rquj0")
 
-[node name="Mesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/Ground"]
+[node name="Mesh" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/WorldGeometry/Ground"]
 mesh = SubResource("PlaneMesh_uouax")
 skeleton = NodePath("")
 surface_material_override/0 = ExtResource("6_7o7re")
 
-[node name="trapezoid" parent="GameViewportContainer/GameViewport" instance=ExtResource("5_2pfh7")]
-transform = Transform3D(-2.18557e-07, 0, 5, 0, 5, 0, -5, 0, -2.18557e-07, 0, 0, -50)
+[node name="trapezoid" parent="GameViewportContainer/GameViewport/WorldGeometry" instance=ExtResource("5_2pfh7")]
+transform = Transform3D(1.2941, 0, 4.82963, 0, 5, 0, -4.82963, 0, 1.2941, -30, 0, 80)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="GameViewportContainer/GameViewport"]
+[node name="Wall" type="MeshInstance3D" parent="GameViewportContainer/GameViewport/WorldGeometry"]
 transform = Transform3D(0.802807, 0, -0.596239, 0, 1, 0, 0.596239, 0, 0.802807, -80, 8, 2.5)
 mesh = SubResource("BoxMesh_88pcn")
+skeleton = NodePath("../..")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="GameViewportContainer/GameViewport/MeshInstance3D"]
+[node name="StaticBody3D" type="StaticBody3D" parent="GameViewportContainer/GameViewport/WorldGeometry/Wall"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/MeshInstance3D/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GameViewportContainer/GameViewport/WorldGeometry/Wall/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_eo88g")
+
+[node name="composite ramp" parent="GameViewportContainer/GameViewport/WorldGeometry" instance=ExtResource("25_shrm1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -45)
+
+[node name="boxes" parent="GameViewportContainer/GameViewport/WorldGeometry" instance=ExtResource("26_idtbf")]
+transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 40, 0, 10)
 
 [node name="GameManager" type="Control" parent="." node_paths=PackedStringArray("timer_label", "starting_screen", "results_screen", "hud_root", "pause_loop_player", "game_track_player")]
 process_mode = 3
